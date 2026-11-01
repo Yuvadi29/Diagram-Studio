@@ -1,0 +1,89 @@
+# Build status
+
+_Last updated: 1 Nov 2026_
+
+## Verification so far (read this first)
+
+The code was written in a sandbox where the npm registry was blocked, so **dependencies have never been installed and the Next.js app has not yet been built or run**. What *was* verified there:
+
+| Check | Result |
+|---|---|
+| Unit tests for all core logic (DSL validation/repair, patches, diffs, layout, Excalidraw adapter, scenes, formats, cameras, interpolation, SVG renderer, AI orchestration with repair loop, Ollama + Gemini providers, video job builder) | **89 passing.** Run with a vitest-compatible harness, using locally available copies of zod v4 and a dagre port |
+| Strict TypeScript on the core modules (real zod types) | **Clean** |
+| TypeScript on the whole app (pages, components, routes) against stand-in stubs for third-party packages | **Clean.** This catches mismatched props, imports and signatures in our own code, but not misuse of third-party APIs |
+| Supabase migrations + RLS on real PostgreSQL 16 (with auth/storage stubs) | **Passing:** isolation between users, blocked cross-user writes, anon access, RPCs, cascade deletes, worker job claiming |
+| Presentation player, real React 19 in headless Chromium | **Working:** keyboard navigation, transitions, format switch, autoplay/pause, scene tabs; no console errors |
+| SVG presentation output, 16:9 and 9:16 | Visually inspected |
+
+**First things to run on your machine:** `bun install && bun run check`, then `bun dev` and walk the journey, then `bun run test:e2e`. The likeliest friction points are listed under *Known risks*.
+
+## Changelog
+- **1 Nov 2026:** First run on a hosted Supabase project failed with `Could not find the table 'public.projects'` because the migrations hadn't been applied. Added `supabase/setup.sql` (all migrations in one file, safe to re-run, verified by running it three times in a row), explicit Data API grants for newer projects, support for publishable/secret keys (legacy anon/service-role still accepted), and a setup screen (`SetupRequired`) that replaces the crash when the schema is missing. Docker is no longer needed: the README's quick start now targets a hosted project.
+
+## Completed
+
+### Phase 1: Foundation and diagram engine
+- Next.js 16 App Router, TypeScript, Tailwind v4, shadcn-style UI kit (Radix), Lucide
+- Supabase Auth: sign up, sign in, sign out, email-link callback/confirm, protected routes (`src/proxy.ts`), profile management
+- Dashboard: sidebar, profile menu, recent + all projects, search, thumbnails, rename/duplicate/delete, empty state with example prompts
+- Excalidraw integration (official React component) with autosave (debounced), save status, retry/backoff, local draft recovery, stale-write detection, Ctrl/⌘+S
+- `DiagramDSL` + Zod schema with referential-integrity validation and limits; deterministic repair (`sanitizeDiagram`)
+- Excalidraw adapter (`toExcalidrawElements`, `fromExcalidrawScene`, `updateExcalidrawScene`) with unit tests
+- Layout engine: dagre (LR/TB, groups, edge-label spacing) and a sequence-diagram strategy, behind a strategy registry
+- Ollama provider (browser → localhost, structured outputs, connection test, model check, timeouts, actionable errors) and Gemini provider (server-only, JSON schema output, retries, timeouts, usage)
+- Generation workflow: prompt → structured output → validate/repair → layout → adapter → canvas → persisted with a version
+
+### Phase 2: Diagram intelligence
+- Natural-language modifications as patch operations; clarify/explain responses; selected-component context
+- Diff preview with Apply/Discard; one-click undo; Excalidraw undo/redo; version history with non-destructive restore
+- Highlighting, layout direction changes, type changes, simplification via AI; inspector panel for manual property edits
+
+### Phase 3: Scene-based presentation
+- Presentation/scene data model (`replace_scenes` RPC for atomic ordered saves)
+- AI scene generation (invented ids are rejected and repaired) plus deterministic "Auto-build" (no AI needed)
+- Scene builder: create, delete (with undo), duplicate, rename, reorder (drag-and-drop + keyboard), narration, duration, transition, visibility, highlight, dim, camera
+- Transition preview; full-screen player (play/pause, prev/next, progress, keyboard, click-to-advance, auto-hiding controls)
+
+### Phase 4: Multi-format presentation
+- Independent landscape/portrait layouts sharing logical ids; landscape mirrors the editor, portrait gets its own vertical layout
+- Per-format manual node positioning (drag in the studio), preserved on regeneration; explicit reset
+- Per-format cameras; format switching in studio and player; captions laid out per format
+
+### Phase 5: Export and deployment
+- PNG, SVG, `.excalidraw`, project JSON, scene images (PNG+SVG zip)
+- Remotion composition driven by the shared presentation model; background worker with job claiming, progress, upload to private storage, signed downloads, failure handling, stale-job recovery
+- Export status UI with polling; Vercel deployment notes
+
+## In progress
+- Nothing. All phases are implemented and awaiting first install and run.
+
+## Pending / future
+- Browser-based presentation recording (PRD §12.3, explicitly a future module)
+- Real-time collaboration, light/dark theming of presentation output, custom presentation themes
+- Optional local companion service for Ollama (PRD §6.4: "do not make it a requirement for MVP")
+- Storing thumbnails in Supabase Storage instead of a data URL column (see decisions)
+
+## Known risks (untested against installed packages)
+1. **Excalidraw 0.18 API details:** `restoreElements` options, `CaptureUpdateAction`, `exportToBlob` `getDimensions`. Code is defensive, but verify that generation, undo and export work.
+2. **Undo/redo toolbar buttons** dispatch synthetic Ctrl/⌘+Z key events to Excalidraw (its history isn't on the public API). Keyboard undo works regardless.
+3. **Package versions** use caret ranges (`next ^16`, `@excalidraw/excalidraw ^0.18`, `zod ^4`, `@supabase/ssr ^0.7`, `lucide-react ^0.460`). If install resolves something incompatible, pin to the latest of those majors.
+4. **ESLint:** React-Compiler-era rules from newer `eslint-plugin-react-hooks` are downgraded to warnings in `eslint.config.mjs`.
+5. **Gemini:** uses `responseJsonSchema` and falls back automatically to plain JSON mode if the model rejects it.
+6. **Ollama from an HTTPS site:** depends on the user setting `OLLAMA_ORIGINS` and the browser allowing local network access. The UI explains both.
+
+## Technical decisions
+- **Ollama runs from the browser**, so it works for a hosted SaaS without a companion app. The orchestrator is isomorphic: the same prompts, schemas and validation run in the browser (Ollama) and on the server (Gemini).
+- **Patch operations, not regenerated diagrams**, for modifications. Determinism preserves ids and positions; the model never sees coordinates.
+- **Adapter writes full native elements** (deterministic ids, `customData` bookkeeping). In the browser they then go through Excalidraw's own `restoreElements` for text metrics and bindings, which keeps the adapter pure and unit-testable.
+- **One renderer for presentations** (pure SVG string), shared by player, studio, scene images and Remotion, giving identical output everywhere.
+- **Format layouts are recomputed on load** (landscape from the editor canvas, portrait automatically) with manual positions overlaid. Edits in the editor show up in presentations, and manual tweaks survive.
+- **Thumbnails are small WebP data URLs** on `projects.thumbnail_url` (≤ 300 KB, enforced by a CHECK constraint). This avoids a storage round-trip per save; Storage is used for videos.
+- **Rate limiting uses the `ai_usage` table**, which works across serverless instances without Redis.
+- **Schema setup without Docker:** `supabase/setup.sql` mirrors `supabase/migrations/` and is idempotent (`if not exists`, `drop … if exists`), so it can be pasted into the SQL Editor; `supabase db push` remains an option.
+- **Versions are explicit snapshots** (AI changes, restores, "Save version", manual edits preceding an AI change), not every autosave.
+
+## Next implementation tasks
+1. `bun install && bun run check`; fix anything the real type definitions or lint surface.
+2. Apply `supabase/setup.sql` in the hosted project's SQL Editor, then walk the PRD §24 journey with both providers.
+3. `bun run test:e2e`.
+4. Deploy to Vercel + hosted Supabase; deploy the render worker; test an MP4 render end to end.
