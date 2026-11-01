@@ -1,8 +1,8 @@
 import "server-only";
 import { NextResponse } from "next/server";
-import type { User } from "@supabase/supabase-js";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { getSessionUser, type SessionUser } from "@/lib/auth/session";
 
 export type ServerSupabase = Awaited<ReturnType<typeof createClient>>;
 
@@ -30,11 +30,8 @@ export function errorResponse(err: unknown) {
 }
 
 /** Authenticate an API request. RLS is still enforced by Postgres on every query. */
-export async function requireApiUser(): Promise<{ supabase: ServerSupabase; user: User }> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export async function requireApiUser(): Promise<{ supabase: ServerSupabase; user: SessionUser }> {
+  const [supabase, user] = await Promise.all([createClient(), getSessionUser()]);
   if (!user) throw new ApiError(401, "UNAUTHORIZED", "You must be signed in.");
   return { supabase, user };
 }

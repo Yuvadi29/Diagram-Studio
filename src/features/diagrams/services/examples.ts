@@ -23,3 +23,6 @@ export const EXAMPLE_PROMPTS: ExamplePrompt[] = [
 ];
 
 export const PENDING_PROMPT_KEY = (projectId: string) => `ds-pending-prompt:${projectId}`;
+
+/** A prompt typed on the landing page, carried through sign-in to the new-diagram dialog (localStorage). */
+export const LANDING_PROMPT_KEY = "ds-landing-prompt";

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { LandingPage } from "@/components/landing/landing-page";
 import { bricolage, kalam } from "@/components/landing/fonts";
-import { createClient } from "@/lib/supabase/server";
+import { getSessionUser } from "@/lib/auth/session";
 import { publicEnv } from "@/lib/env";
 import "./landing.css";
 
@@ -20,11 +20,7 @@ export const metadata: Metadata = {
 export default async function Home() {
   let signedIn = false;
   if (publicEnv.supabaseUrl && publicEnv.supabaseAnonKey) {
-    const supabase = await createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    signedIn = Boolean(user);
+    signedIn = Boolean(await getSessionUser());
   }
   return (
     <div className={`${bricolage.variable} ${kalam.variable}`}>

@@ -29,7 +29,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans`}>
+      {/* Browser extensions (e.g. ColorZilla) add attributes to <body> before React loads. */}
+      <body className={`${geistSans.variable} ${geistMono.variable} font-sans`} suppressHydrationWarning>
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster />
       </body>

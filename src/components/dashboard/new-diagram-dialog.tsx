@@ -14,9 +14,18 @@ import { api, errorMessage } from "@/lib/api-client";
 import { DIAGRAM_TYPE_LABELS, DIAGRAM_TYPES, type DiagramType } from "@/features/diagrams/schema/dsl";
 import { EXAMPLE_PROMPTS, PENDING_PROMPT_KEY } from "@/features/diagrams/services/examples";
 
-export function NewDiagramDialog({ children, initialPrompt }: { children: React.ReactNode; initialPrompt?: { prompt: string; type: DiagramType | "auto" } }) {
+export function NewDiagramDialog({
+  children,
+  initialPrompt,
+  defaultOpen = false,
+}: {
+  children?: React.ReactNode;
+  initialPrompt?: { prompt: string; type: DiagramType | "auto" };
+  /** Open immediately on mount (e.g. with a prompt carried over from the landing page). */
+  defaultOpen?: boolean;
+}) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [title, setTitle] = useState("");
   const [prompt, setPrompt] = useState(initialPrompt?.prompt ?? "");
   const [type, setType] = useState<DiagramType | "auto">(initialPrompt?.type ?? "auto");
@@ -50,7 +59,7 @@ export function NewDiagramDialog({ children, initialPrompt }: { children: React.
         if (!o) setBusy(null);
       }}
     >
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle>New diagram</DialogTitle>

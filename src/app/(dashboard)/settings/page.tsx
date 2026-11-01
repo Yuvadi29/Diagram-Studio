@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ProviderSettingsForm } from "@/components/ai/provider-settings";
 import { ProfileForm } from "@/components/settings/profile-form";
 import { AppearanceForm } from "@/components/settings/appearance-form";
+import { AISettingsSection } from "@/components/settings/ai-settings-section";
+import { SignOutButton } from "@/components/settings/sign-out-button";
 import { getProfile, requireUser } from "@/lib/auth/session";
 import { settingsFromPreferences } from "@/features/ai/services/settings";
 import { getCloudStatus } from "@/features/ai/services/server";
@@ -23,7 +24,7 @@ export default async function SettingsPage() {
     <div className="mx-auto grid max-w-3xl gap-6 px-4 py-6 sm:px-8 sm:py-8">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
-        <p className="text-sm text-muted-foreground">Manage your profile, AI provider and appearance.</p>
+        <p className="text-sm text-muted-foreground">Manage your profile, API keys, AI provider and account.</p>
       </div>
       <Card>
         <CardHeader>
@@ -33,24 +34,26 @@ export default async function SettingsPage() {
           <ProfileForm email={user.email ?? ""} displayName={profile?.display_name ?? ""} avatarUrl={profile?.avatar_url ?? ""} />
         </CardContent>
       </Card>
-      <Card id="ai">
-        <CardHeader>
-          <CardTitle>AI provider</CardTitle>
-          <CardDescription>Use your own Gemini API key, or run models locally with Ollama. Diagram Studio never switches providers on its own.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ProviderSettingsForm initial={settingsFromPreferences(profile?.preferences)} cloud={cloud} />
-          <p className="mt-4 border-t pt-4 text-xs text-muted-foreground">
-            Last 30 days: {totals.requests} AI request{totals.requests === 1 ? "" : "s"} · {totals.tokens.toLocaleString()} tokens · {totals.errors} failed
-          </p>
-        </CardContent>
-      </Card>
+      <AISettingsSection
+        initial={settingsFromPreferences(profile?.preferences)}
+        cloud={cloud}
+        usageLine={`Last 30 days: ${totals.requests} AI request${totals.requests === 1 ? "" : "s"} · ${totals.tokens.toLocaleString()} tokens · ${totals.errors} failed`}
+      />
       <Card>
         <CardHeader>
           <CardTitle>Appearance</CardTitle>
         </CardHeader>
         <CardContent>
           <AppearanceForm />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Account</CardTitle>
+          <CardDescription>Signed in with Google as {user.email}.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SignOutButton />
         </CardContent>
       </Card>
     </div>

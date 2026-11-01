@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LandingPromptPickup } from "@/components/dashboard/landing-prompt-pickup";
 import { ProjectBrowser } from "@/components/dashboard/project-browser";
 import { requireUser } from "@/lib/auth/session";
 import { listProjects } from "@/lib/data";
@@ -14,5 +15,10 @@ export default async function DashboardPage() {
     throw err;
   });
   if (!projects) return <SetupRequired />;
-  return <ProjectBrowser initialProjects={projects} mode="dashboard" />;
+  return (
+    <>
+      <ProjectBrowser initialProjects={projects} mode="dashboard" />
+      <LandingPromptPickup />
+    </>
+  );
 }

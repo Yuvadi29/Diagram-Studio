@@ -9,13 +9,16 @@ export const GET = handler(async () => {
   return json({ cloud: await getCloudStatus(supabase, user.id) });
 });
 
-const PutSchema = z.object({
-  /** A new key to store. Omit to keep the saved key and only change the model. */
-  apiKey: z.string().trim().min(10, "That doesn’t look like a Gemini API key.").max(500).optional(),
-  model: z.string().trim().min(1, "Choose a model.").max(200),
-});
+const PutSchema = z
+  .object({
+    /** A new key to store (verified with Google first). Omit to keep the saved key. */
+    apiKey: z.string().trim().min(10, "That doesn’t look like a Gemini API key.").max(500).optional(),
+    /** The model to use. Omit to keep the current choice. */
+    model: z.string().trim().min(1).max(200).optional(),
+  })
+  .refine((b) => b.apiKey || b.model, { message: "Provide an API key or a model." });
 
-/** Save the user's own key (verified against Google first) and chosen model. */
+/** Save the user's own key and/or chosen model. Keys are verified against Google first. */
 export const PUT = handler(async (request: Request) => {
   const { supabase, user } = await requireApiUser();
   const body = await parseBody(request, PutSchema, 5_000);
@@ -27,11 +30,16 @@ export const PUT = handler(async (request: Request) => {
   } catch (err) {
     throw toApiError(err);
   }
-  if (!models.some((m) => m.id === body.model)) {
+  if (body.model && !models.some((m) => m.id === body.model)) {
     throw new ApiError(400, "MODEL_UNAVAILABLE", `“${body.model}” isn’t available for this API key. Pick one from the list.`);
   }
   if (body.apiKey) await saveUserGeminiKey(supabase, user.id, body.apiKey);
-  await saveGeminiModel(supabase, user.id, body.model);
+  if (body.model) await saveGeminiModel(supabase, user.id, body.model);
+  // A new key that can't use the previously chosen model clears that choice.
+  if (body.apiKey && !body.model) {
+    const status = await getCloudStatus(supabase, user.id);
+    if (status.model && !models.some((m) => m.id === status.model)) await saveGeminiModel(supabase, user.id, null);
+  }
   return json({ cloud: await getCloudStatus(supabase, user.id) });
 });
 

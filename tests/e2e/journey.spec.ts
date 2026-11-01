@@ -4,11 +4,13 @@ import { startFakeOllama } from "./fake-ollama";
 
 /**
  * PRD §20/§24 end-to-end journey:
- * sign up → create project → generate (Ollama) → modify with AI → save → reload →
- * generate scenes → present → switch format → export.
+ * signed in → create project → generate (Ollama) → modify with AI → save → reload →
+ * generate scenes → present → switch format → export → sign out.
  *
- * Prerequisites: app running at E2E_BASE_URL against a Supabase project with
- * email confirmation disabled (the local `supabase start` config does this).
+ * Sign-in is Google OAuth, which can't be scripted. Record a signed-in session once:
+ *   bunx playwright codegen http://localhost:3000/login --save-storage=tests/e2e/.auth/user.json
+ * (sign in with a test Google account, then close the window), and run with
+ *   E2E_STORAGE_STATE=tests/e2e/.auth/user.json bun run test:e2e
  */
 let ollama: Server;
 const OLLAMA_PORT = 11555;
@@ -20,17 +22,14 @@ test.afterAll(async () => {
   await new Promise((r) => ollama.close(r));
 });
 
-test("complete RAG journey", async ({ page }) => {
-  const email = `e2e-${Date.now()}@example.com`;
+test.describe("signed in", () => {
+  test.skip(!process.env.E2E_STORAGE_STATE, "Set E2E_STORAGE_STATE to a recorded Google session (see the comment at the top of this file).");
+  test.use({ storageState: process.env.E2E_STORAGE_STATE });
 
-  // 1. Sign up
-  await page.goto("/signup");
-  await page.getByLabel("Name").fill("E2E Tester");
-  await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill("correct-horse-battery");
-  await page.getByRole("button", { name: "Create account" }).click();
+test("complete RAG journey", async ({ page }) => {
+  // 1. Signed in via the recorded Google session
+  await page.goto("/dashboard");
   await expect(page).toHaveURL(/\/dashboard/);
-  await expect(page.getByText("Start by describing the diagram you want to create.")).toBeVisible();
 
   // 2. Choose local Ollama (pointing at the fake server) and test the connection
   await page.goto("/settings");
@@ -89,6 +88,12 @@ test("complete RAG journey", async ({ page }) => {
   await expect(stage.locator("svg")).toHaveAttribute("viewBox", "0 0 1080 1920");
   await page.keyboard.press("o");
   await expect(stage.locator("svg")).toHaveAttribute("viewBox", "0 0 1920 1080");
+});
+});
+
+test("login page offers Google sign-in", async ({ page }) => {
+  await page.goto("/login");
+  await expect(page.getByRole("button", { name: "Continue with Google" })).toBeVisible();
 });
 
 test("unauthenticated users are redirected away from private pages", async ({ page }) => {

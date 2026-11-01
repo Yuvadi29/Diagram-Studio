@@ -127,10 +127,10 @@ export async function makeThumbnail(api: ExcalidrawAPI): Promise<string | null> 
     appState: { ...api.getAppState(), exportBackground: true, exportWithDarkMode: false, viewBackgroundColor: "#ffffff" },
     files: api.getFiles(),
     mimeType: "image/webp",
-    quality: 0.75,
+    quality: 0.6,
     exportPadding: 24,
     getDimensions: (width: number, height: number) => {
-      const scale = Math.min(1, 520 / Math.max(width, height));
+      const scale = Math.min(1, 420 / Math.max(width, height));
       return { width: width * scale, height: height * scale, scale };
     },
   });
@@ -140,5 +140,6 @@ export async function makeThumbnail(api: ExcalidrawAPI): Promise<string | null> 
     r.onerror = () => reject(r.error);
     r.readAsDataURL(blob);
   });
-  return dataUrl.length < 290_000 ? dataUrl : null;
+  // Keep dashboard payloads small: previews are loaded for every project card.
+  return dataUrl.length < 80_000 ? dataUrl : null;
 }

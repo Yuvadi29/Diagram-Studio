@@ -79,7 +79,12 @@ export function computeViewBox(model: PresentationModel, scene: PresentationScen
       if (!b) return all;
       // Groups whose members are all visible are part of the framed area.
       const gb = model.groups.filter((g) => g.nodeIds.every((id) => ids.includes(id))).map((g) => g.box);
-      return fitToAspect(boundsOf([b, ...gb])!, aspect, 0.06, minSize);
+      // Routed edges (e.g. sequence messages below the participants) are framed too.
+      const visEdges = new Set(scene.visibleEdgeIds);
+      const eb = model.edges
+        .filter((e) => e.points?.length && visEdges.has(e.id) && ids.includes(e.source) && ids.includes(e.target))
+        .map((e) => boundsOf(e.points!.map(([px, py]) => ({ x: px - 24, y: py - 24, width: 48, height: 48 })))!);
+      return fitToAspect(boundsOf([b, ...gb, ...eb])!, aspect, 0.06, minSize);
     }
   }
 }

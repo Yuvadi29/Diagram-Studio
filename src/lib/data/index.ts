@@ -9,7 +9,7 @@ import { repairAndValidate } from "@/features/diagrams/validation/sanitize";
 export const PROJECT_LIST_COLUMNS = "id,user_id,title,description,thumbnail_url,created_at,updated_at";
 
 export async function listProjects(supabase: ServerSupabase, q?: string): Promise<ProjectRow[]> {
-  let query = supabase.from("projects").select(PROJECT_LIST_COLUMNS).order("updated_at", { ascending: false }).limit(200);
+  let query = supabase.from("projects").select(PROJECT_LIST_COLUMNS).order("updated_at", { ascending: false }).limit(120);
   if (q?.trim()) query = query.ilike("title", `%${q.trim().replace(/[%_]/g, "\\$&")}%`);
   const { data, error } = await query;
   dbError(error);

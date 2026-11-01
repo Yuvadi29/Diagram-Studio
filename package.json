@@ -5,7 +5,7 @@
   "description": "Diagram Studio: turn complex ideas into visual stories. AI diagram generation, Excalidraw editing and scene-based presentations.",
   "packageManager": "bun@1.2.0",
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS=--max-http-header-size=65536 next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",

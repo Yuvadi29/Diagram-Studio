@@ -2,9 +2,25 @@
 \set ON_ERROR_STOP on
 begin;
 
-insert into auth.users (id, email, raw_user_meta_data) values
-  ('11111111-1111-1111-1111-111111111111', 'alice@example.com', '{"display_name":"Alice"}'),
-  ('22222222-2222-2222-2222-222222222222', 'bob@example.com', '{}');
+insert into auth.users (id, email, raw_user_meta_data, raw_app_meta_data, last_sign_in_at) values
+  ('11111111-1111-1111-1111-111111111111', 'alice@example.com', '{"display_name":"Alice"}', '{"provider":"google"}', now()),
+  ('22222222-2222-2222-2222-222222222222', 'bob@example.com', '{}', '{}', null),
+  ('33333333-3333-3333-3333-333333333333', 'carol@gmail.com', '{"full_name":"Carol G","picture":"https://example.com/c.png"}', '{"provider":"google"}', null);
+
+-- Google profile metadata + login tracking
+update auth.users set last_sign_in_at = now() + interval '1 minute' where id = '11111111-1111-1111-1111-111111111111';
+update auth.users set last_sign_in_at = now() where id = '22222222-2222-2222-2222-222222222222';
+update auth.users set email = 'bob2@example.com' where id = '22222222-2222-2222-2222-222222222222';
+do $$ begin
+  assert (select display_name from profiles where id = '33333333-3333-3333-3333-333333333333') = 'Carol G', 'google full_name used';
+  assert (select avatar_url from profiles where id = '33333333-3333-3333-3333-333333333333') = 'https://example.com/c.png', 'google picture used';
+  assert (select count(*) from user_logins where user_id = '11111111-1111-1111-1111-111111111111') = 2, 'alice: insert + re-login recorded';
+  assert (select count(*) from user_logins where user_id = '22222222-2222-2222-2222-222222222222') = 1, 'bob: one login, email change not counted';
+  assert (select provider from user_logins where user_id = '11111111-1111-1111-1111-111111111111' limit 1) = 'google', 'provider recorded';
+  assert (select total_users from user_stats) = 3, 'stats: total users';
+  assert (select users_who_logged_in from user_stats) = 2, 'stats: users who logged in';
+  assert (select login_count from users_overview where email = 'alice@example.com') = 2, 'overview login count';
+end $$;
 
 -- profile trigger
 do $$ begin
@@ -69,6 +85,18 @@ do $$ declare p uuid := (select v from t_ids where k = 'alice_project'); n int; 
   assert (select count(*) from exports) = 0, 'bob sees no exports';
   assert (select count(*) from ai_usage) = 0, 'bob sees no ai usage';
   assert (select count(*) from user_ai_keys) = 0, 'bob cannot see alice api key';
+  begin
+    perform count(*) from user_logins;
+    raise exception 'authenticated user could read user_logins';
+  exception when insufficient_privilege then null; end;
+  begin
+    perform * from user_stats;
+    raise exception 'authenticated user could read user_stats';
+  exception when insufficient_privilege then null; end;
+  begin
+    perform * from users_overview;
+    raise exception 'authenticated user could read users_overview';
+  exception when insufficient_privilege then null; end;
   update user_ai_keys set encrypted_key = 'x' where true;
   get diagnostics n = row_count;
   assert n = 0, 'bob cannot overwrite alice api key';

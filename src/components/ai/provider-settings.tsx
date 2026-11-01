@@ -44,18 +44,21 @@ export function ProviderSettingsForm({
   cloud: initialCloud,
   onSaved,
   compact,
+  keySource = "inline",
 }: {
   initial: AISettings;
   cloud: CloudStatus;
   onSaved?: (s: AISettings, cloud: CloudStatus) => void;
   compact?: boolean;
+  /** "settings": the key is managed in Settings → API keys; this form only picks the model. */
+  keySource?: "inline" | "settings";
 }) {
   const [settings, setSettings] = useState<AISettings>(initial);
   const [cloud, setCloud] = useState<CloudStatus>(initialCloud);
   const [saving, setSaving] = useState(false);
 
   // ── Gemini (bring your own key) ──
-  const [replacingKey, setReplacingKey] = useState(!initialCloud.hasKey);
+  const [replacingKey, setReplacingKey] = useState(keySource === "inline" && !initialCloud.hasKey);
   const [newKey, setNewKey] = useState("");
   const [verifiedKey, setVerifiedKey] = useState<string | null>(null);
   const [models, setModels] = useState<GeminiModelOption[] | null>(null);
@@ -186,6 +189,34 @@ export function ProviderSettingsForm({
             </p>
           )}
 
+          {keySource === "settings" ? (
+            <div className="grid gap-2">
+              <Label>Gemini API key</Label>
+              {cloud.hasKey ? (
+                <p className="flex flex-wrap items-center gap-2 text-sm">
+                  <span className="flex items-center gap-1.5 rounded-md border bg-muted/50 px-2.5 py-1 font-mono text-xs">
+                    <KeyRound className="size-3.5 text-success" /> {cloud.keyHint}
+                  </span>
+                  <a href="#api-keys" className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
+                    Manage in API keys
+                  </a>
+                </p>
+              ) : (
+                <p className="rounded-md border border-dashed px-3 py-2 text-xs text-muted-foreground">
+                  Add your Gemini API key under{" "}
+                  <a href="#api-keys" className="text-foreground underline underline-offset-4">
+                    API keys
+                  </a>{" "}
+                  first, then choose a model here.
+                </p>
+              )}
+              {keyError && (
+                <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive" role="alert">
+                  {keyError}
+                </p>
+              )}
+            </div>
+          ) : (
           <div className="grid gap-2">
             <Label htmlFor="gemini-key">Gemini API key</Label>
             {cloud.hasKey && !replacingKey ? (
@@ -257,6 +288,7 @@ export function ProviderSettingsForm({
               </p>
             )}
           </div>
+          )}
 
           <div className="grid gap-2">
             <div className="flex items-center justify-between">
@@ -291,6 +323,8 @@ export function ProviderSettingsForm({
                   </>
                 ) : cloud.hasKey && !replacingKey ? (
                   "Couldn’t load models for the saved key."
+                ) : keySource === "settings" ? (
+                  "Models appear here once your key is saved."
                 ) : (
                   "Verify your key to see the models you can use."
                 )}

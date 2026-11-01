@@ -1,8 +1,10 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
 import { LogOut, Settings, User } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { signOut } from "@/lib/auth/sign-out";
 
 export function Avatar({ name, url, className }: { name: string; url?: string | null; className?: string }) {
   const initials = name
@@ -20,6 +22,7 @@ export function Avatar({ name, url, className }: { name: string; url?: string | 
 }
 
 export function UserMenu({ name, email, avatarUrl, compact }: { name: string; email: string; avatarUrl?: string | null; compact?: boolean }) {
+  const [signingOut, setSigningOut] = useState(false);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex w-full items-center gap-2 rounded-md p-1.5 text-left hover:bg-accent" aria-label="Account menu">
@@ -40,13 +43,17 @@ export function UserMenu({ name, email, avatarUrl, compact }: { name: string; em
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <form action="/auth/signout" method="post">
-          <DropdownMenuItem asChild>
-            <button type="submit" className="w-full">
-              <LogOut /> Sign out
-            </button>
-          </DropdownMenuItem>
-        </form>
+        <DropdownMenuItem
+          onSelect={(e) => {
+            // Keep the menu mounted until sign-out finishes; it navigates away when done.
+            e.preventDefault();
+            setSigningOut(true);
+            void signOut();
+          }}
+          disabled={signingOut}
+        >
+          <LogOut /> {signingOut ? "Signing out…" : "Sign out"}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { assertSupabaseConfigured, publicEnv } from "@/lib/env";
@@ -6,8 +7,9 @@ import { assertSupabaseConfigured, publicEnv } from "@/lib/env";
 /**
  * Supabase client bound to the current user's session (cookies).
  * All queries run with the user's JWT, so Row Level Security applies.
+ * Cached per request, so layouts and pages share one client.
  */
-export async function createClient() {
+export const createClient = cache(async () => {
   assertSupabaseConfigured();
   const cookieStore = await cookies();
   return createServerClient(publicEnv.supabaseUrl, publicEnv.supabaseAnonKey, {
@@ -24,4 +26,4 @@ export async function createClient() {
       },
     },
   });
-}
+});

@@ -21,11 +21,15 @@ Describe a technical concept in plain language. Diagram Studio generates a struc
 1. **Install:** `bun install`
 2. **Create the database schema (one time).** In the Supabase dashboard, open **SQL Editor → New query**, paste the whole of [`supabase/setup.sql`](supabase/setup.sql), and click **Run**. It's safe to run again.
    *CLI alternative:* `npx supabase link --project-ref <ref>` then `npx supabase db push` (applies `supabase/migrations/`; also no Docker).
-3. **Configure auth.** Go to **Authentication → URL Configuration**. Set *Site URL* to `http://localhost:3000` (your deployed URL later) and add `http://localhost:3000/auth/callback` to *Redirect URLs*. Email confirmation can stay on; sign-up then sends a confirmation link.
+3. **Turn on Google sign-in** (the only sign-in method):
+   - In [Google Cloud Console](https://console.cloud.google.com/apis/credentials), create an **OAuth client ID** (type *Web application*). Under *Authorized redirect URIs*, add `https://<project-ref>.supabase.co/auth/v1/callback`.
+   - In Supabase, go to **Authentication → Sign In / Providers → Google**: enable it and paste the client ID and secret. You can switch off the Email provider there.
+   - In **Authentication → URL Configuration**, set *Site URL* to `http://localhost:3000` (your domain in production) and add `http://localhost:3000/auth/callback` (and `https://<your-domain>/auth/callback`) to *Redirect URLs*.
 4. **Environment:** `cp .env.example .env.local`, then fill in `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (Project Settings → API Keys) and set `API_KEY_ENCRYPTION_SECRET` (`openssl rand -base64 32`).
+   Users add their own Gemini key under **Settings → API keys**.
 5. **Run:** `bun dev`, then open http://localhost:3000.
 
-Sign up, click **Create new diagram**, and try *“Explain how a RAG architecture works.”* If you skipped step 2, the app shows a setup screen with a direct link to your project's SQL Editor instead of an error.
+Click **Continue with Google**, then **Create new diagram**, and try *“Explain how a RAG architecture works.”* If you skipped step 2, the app shows a setup screen with a direct link to your project's SQL Editor instead of an error.
 
 > Prefer a fully local stack? `supabase start` (needs Docker) followed by `supabase db reset` works too; use the URL and keys from `supabase status`.
 
@@ -40,6 +44,16 @@ There is no app-wide Gemini key. Each user, in **Settings → AI provider** (or 
 The key is encrypted on the server (AES-256-GCM using `API_KEY_ENCRYPTION_SECRET`), stored in `user_ai_keys` (row-level security: owner only), and never sent back to the browser; the UI only shows its last four characters. All Gemini calls are made server-side with the user's own key, so usage is billed to their Google account. Users can replace or remove their key at any time. Keep `API_KEY_ENCRYPTION_SECRET` stable: if it changes, saved keys can't be decrypted and users are asked to add them again.
 
 Per-user request limits (`AI_RATE_LIMIT_PER_10_MIN`, `AI_RATE_LIMIT_PER_DAY`) still protect the server, and usage is recorded in `ai_usage`.
+
+### Users and sign-ins
+
+In the Supabase **Table Editor** you'll find:
+
+- **`user_stats`**: one row of totals: users, users who have logged in, active in the last 24h/7d/30d, new users, logins in the last 24h, projects.
+- **`users_overview`**: one row per user: email, name, provider, sign-up date, last sign-in, number of logins and projects.
+- **`user_logins`**: every sign-in event (recorded automatically by a trigger on `auth.users`).
+
+These are readable only from the dashboard (or with the secret key). Signed-in users and the public API get "permission denied".
 
 ### Local AI (Ollama)
 
@@ -81,7 +95,7 @@ prompt ──► AI provider (Ollama in browser | Gemini on server)
 | `src/features/excalidraw/services` | The only code that touches the live Excalidraw API |
 | `src/features/ai` | Provider abstraction, Ollama + Gemini transports, prompts, structured-output schemas, validate/repair loop, rate limits, usage |
 | `src/features/presentations` | Scene schema, auto-generation, reconciliation, format layouts, cameras, frame interpolation, SVG renderer |
-| `src/components/landing`, `src/app/landing.css` | Public landing page; its demos run on the real presentation engine (no video files) |
+| `src/components/landing`, `src/app/landing.css` | Public landing page: a scroll-paced story in a pinned product window, rendered live by the real presentation engine (no video files). Demo diagrams live in `landing/topics.ts` |
 | `src/features/exports` | Client exports (scene images, JSON), Remotion composition, background render worker |
 | `src/app/api` | Authenticated route handlers (projects, diagrams, versions, presentations, scenes, AI, exports, profile) |
 | `supabase/migrations`, `supabase/setup.sql` | Schema, RLS policies, RPCs (`create_project`, `duplicate_project`, `replace_scenes`, `claim_export_job`), storage bucket |
@@ -143,6 +157,12 @@ Vercel limits request bodies to ~4.5 MB. Diagrams are typically a few hundred KB
 - Users' Gemini keys are encrypted at rest, never returned to the browser, and only used server-side; the secret key is server-only (`server-only` guards).
 - All AI output is parsed with Zod and validated for referential integrity; no model output is ever executed.
 - Request size limits and input validation on every route; per-user AI rate limits backed by the database.
+
+## Troubleshooting
+
+- **Settings says "This server can't store API keys yet".** `API_KEY_ENCRYPTION_SECRET` is missing from `.env.local` (generate one with `openssl rand -base64 32`). Restart `bun dev` after changing env files.
+- **HTTP 431 (Request Header Fields Too Large) after Google sign-in.** The browser is sending more cookies to `localhost:3000` than the server accepts, usually left over from other projects that ran on the same port or from older sign-ins. Clear the site data for `localhost:3000` (DevTools → Application → Storage → Clear site data) and sign in again. `bun dev` also raises Node's header limit to 64 KB to make this unlikely.
+- **Hydration warning naming an attribute like `cz-shortcut-listen` on `<body>`.** A browser extension (ColorZilla here) edits the page before React loads. It's harmless, and the root layout now ignores attribute differences on `<body>`.
 
 ## Project structure
 
