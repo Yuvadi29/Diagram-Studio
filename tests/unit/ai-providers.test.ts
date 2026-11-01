@@ -76,8 +76,31 @@ describe("Ollama provider", () => {
 });
 
 describe("Gemini provider", () => {
-  it("requires an API key", () => {
-    expect(() => new GeminiClient({ apiKey: "", model: "m" })).toThrow(/GEMINI_API_KEY/);
+  it("requires the user's API key and a chosen model", () => {
+    expect(() => new GeminiClient({ apiKey: "", model: "m" })).toThrow(/Add your Gemini API key/);
+    expect(() => new GeminiClient({ apiKey: "k", model: "" })).toThrow(/Choose a Gemini model/);
+  });
+
+  it("lists generateContent-capable Gemini models, best first", async () => {
+    handler = () =>
+      json({
+        models: [
+          { name: "models/gemini-2.5-pro", displayName: "Gemini 2.5 Pro", supportedGenerationMethods: ["generateContent"] },
+          { name: "models/text-embedding-004", displayName: "Embedding", supportedGenerationMethods: ["embedContent"] },
+          { name: "models/gemini-3.8-flash", displayName: "Gemini 3.8 Flash", supportedGenerationMethods: ["generateContent", "countTokens"] },
+          { name: "models/gemini-3.9-flash-preview", displayName: "Gemini 3.9 Flash Preview", supportedGenerationMethods: ["generateContent"] },
+          { name: "models/gemini-3.8-pro", displayName: "Gemini 3.8 Pro", supportedGenerationMethods: ["generateContent"] },
+          { name: "models/gemini-2.5-flash-image", displayName: "Image", supportedGenerationMethods: ["generateContent"] },
+        ],
+      });
+    const models = await GeminiClient.listModels("user-key");
+    expect(models.map((m) => m.id)).toEqual(["gemini-3.8-flash", "gemini-3.8-pro", "gemini-2.5-pro", "gemini-3.9-flash-preview"]);
+    expect(calls[0].url).toContain("/models?pageSize=1000");
+  });
+
+  it("reports an invalid key clearly", async () => {
+    handler = () => json({ error: { message: "API key not valid" } }, 400);
+    await expect(GeminiClient.listModels("bad-key")).rejects.toThrow(/rejected this API key/);
   });
 
   it("calls generateContent with JSON mode, schema and key header", async () => {

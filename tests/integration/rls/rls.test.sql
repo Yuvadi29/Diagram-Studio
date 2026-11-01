@@ -38,6 +38,7 @@ do $$ begin
   assert (select string_agg(title, ',' order by order_index) from scenes) = 'One,Two', 'scene order kept';
 end $$;
 insert into ai_usage (provider, model, operation, status) values ('gemini', 'm', 'generate', 'success');
+insert into user_ai_keys (provider, encrypted_key, key_hint) values ('gemini', 'v1:ciphertext', '…abcd');
 insert into exports (project_id, presentation_id, format) select project_id, id, 'mp4-landscape' from presentations;
 
 -- duplicate
@@ -67,6 +68,10 @@ do $$ declare p uuid := (select v from t_ids where k = 'alice_project'); n int; 
   assert (select count(*) from scenes) = 0, 'bob sees no scenes';
   assert (select count(*) from exports) = 0, 'bob sees no exports';
   assert (select count(*) from ai_usage) = 0, 'bob sees no ai usage';
+  assert (select count(*) from user_ai_keys) = 0, 'bob cannot see alice api key';
+  update user_ai_keys set encrypted_key = 'x' where true;
+  get diagnostics n = row_count;
+  assert n = 0, 'bob cannot overwrite alice api key';
   assert (select count(*) from profiles) = 1, 'bob sees only his profile';
 
   update projects set title = 'pwned' where id = p;

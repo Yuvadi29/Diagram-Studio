@@ -23,7 +23,55 @@ interface GeminiResponse {
   error?: { message?: string; status?: string };
 }
 
+export interface GeminiModelInfo {
+  id: string;
+  displayName: string;
+  description?: string;
+  inputTokenLimit?: number;
+}
+
+/** Rank models so the most useful ones (newest, flash before pro, no previews) come first. */
+function modelRank(id: string): number[] {
+  const version = Number(id.match(/gemini-(\d+(?:\.\d+)?)/)?.[1] ?? 0);
+  const preview = /preview|exp|experimental/i.test(id) ? 1 : 0;
+  const tier = /flash-lite/.test(id) ? 2 : /flash/.test(id) ? 0 : /pro/.test(id) ? 1 : 3;
+  return [preview, -version, tier];
+}
+
 export class GeminiClient implements LLMClient {
+  /**
+   * List the models the given key can use for generateContent. Doubles as key
+   * validation: an invalid key yields NOT_CONFIGURED.
+   */
+  static async listModels(apiKey: string, timeoutMs = 10_000): Promise<GeminiModelInfo[]> {
+    if (!apiKey.trim()) throw new AIError("NOT_CONFIGURED", "Enter a Gemini API key.");
+    const res = await fetchWithTimeout(
+      `${API_BASE}/models?pageSize=1000`,
+      { method: "GET", headers: { "x-goog-api-key": apiKey.trim() }, timeoutMs },
+      { provider: "Gemini", target: "the Gemini API" },
+    );
+    const data = (await res.json().catch(() => ({}))) as {
+      models?: { name: string; displayName?: string; description?: string; inputTokenLimit?: number; supportedGenerationMethods?: string[] }[];
+      error?: { message?: string };
+    };
+    if (!res.ok) {
+      if (res.status === 400 || res.status === 401 || res.status === 403) {
+        throw new AIError("NOT_CONFIGURED", "Google rejected this API key. Check that it’s a valid Gemini API key from Google AI Studio.", { status: res.status });
+      }
+      if (res.status === 429) throw new AIError("RATE_LIMITED", "Gemini rate limit reached. Try again shortly.", { status: 429 });
+      throw new AIError("PROVIDER_ERROR", `Gemini error: ${data.error?.message ?? `HTTP ${res.status}`}`, { status: res.status });
+    }
+    return (data.models ?? [])
+      .filter((m) => m.supportedGenerationMethods?.includes("generateContent") && /gemini/i.test(m.name) && !/embedding|aqa|tts|image|audio|live/i.test(m.name))
+      .map((m) => ({ id: m.name.replace(/^models\//, ""), displayName: m.displayName ?? m.name, description: m.description, inputTokenLimit: m.inputTokenLimit }))
+      .sort((a, b) => {
+        const ra = modelRank(a.id);
+        const rb = modelRank(b.id);
+        for (let i = 0; i < ra.length; i++) if (ra[i] !== rb[i]) return ra[i] - rb[i];
+        return a.id.localeCompare(b.id);
+      });
+  }
+
   readonly provider = "gemini" as const;
   readonly model: string;
   private readonly apiKey: string;
@@ -32,7 +80,8 @@ export class GeminiClient implements LLMClient {
   private schemaSupported = true;
 
   constructor(opts: GeminiOptions) {
-    if (!opts.apiKey) throw new AIError("NOT_CONFIGURED", "Cloud AI is not configured on this server (GEMINI_API_KEY is missing).");
+    if (!opts.apiKey) throw new AIError("NOT_CONFIGURED", "Add your Gemini API key in Settings → AI provider.");
+    if (!opts.model) throw new AIError("NOT_CONFIGURED", "Choose a Gemini model in Settings → AI provider.");
     this.apiKey = opts.apiKey;
     this.model = opts.model;
     this.timeoutMs = opts.timeoutMs ?? 60_000;
@@ -84,8 +133,8 @@ export class GeminiClient implements LLMClient {
         this.schemaSupported = false;
         throw new AIError("PROVIDER_ERROR", msg, { retryable: true, status: 400 });
       }
-      if (res.status === 404) throw new AIError("MODEL_UNAVAILABLE", `Gemini model "${this.model}" was not found. Check GEMINI_MODEL.`, { status: 404 });
-      if (res.status === 401 || res.status === 403) throw new AIError("NOT_CONFIGURED", "The Gemini API key was rejected. Check GEMINI_API_KEY.", { status: res.status });
+      if (res.status === 404) throw new AIError("MODEL_UNAVAILABLE", `The Gemini model "${this.model}" isn’t available for your key. Choose another model in Settings.`, { status: 404 });
+      if (res.status === 401 || res.status === 403) throw new AIError("NOT_CONFIGURED", "Google rejected your Gemini API key. Update it in Settings → AI provider.", { status: res.status });
       if (res.status === 429) throw new AIError("RATE_LIMITED", "Gemini rate limit reached. Please try again shortly.", { status: 429, retryable: true });
       throw new AIError("PROVIDER_ERROR", `Gemini error: ${msg}`, { status: res.status, retryable: res.status >= 500 });
     }

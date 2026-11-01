@@ -194,3 +194,17 @@ describe("svg renderer", () => {
     expect(svg).not.toContain("NaN");
   });
 });
+
+describe("svg renderer options", () => {
+  it("supports unique id prefixes, sketch mode and font overrides", () => {
+    const model = buildPresentationModel(ragDiagram, "landscape", DEFAULT_FORMATS.landscape);
+    const svg = renderFrameSvg(model, staticFrame(model, null), { idPrefix: "hero", sketch: true, fontFamily: "Kalam, cursive" });
+    expect(svg).toContain('id="hero-arrow"');
+    expect(svg).toContain("url(#hero-rough)");
+    expect(svg).not.toContain('id="ds-');
+    expect(svg).toContain('font-family="Kalam, cursive"');
+    const plain = renderFrameSvg(model, staticFrame(model, null));
+    expect(plain).not.toContain("rough");
+    expect(plain).toContain('id="ds-arrow"');
+  });
+});

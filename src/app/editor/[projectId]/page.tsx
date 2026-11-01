@@ -6,7 +6,7 @@ import { getDiagramForProject, getPresentationForProject, getProject } from "@/l
 import { ApiError } from "@/lib/api";
 import { SetupRequired } from "@/components/shared/setup-required";
 import { settingsFromPreferences } from "@/features/ai/services/settings";
-import { cloudStatus } from "@/features/ai/services/server";
+import { getCloudStatus } from "@/features/ai/services/server";
 
 type Props = { params: Promise<{ projectId: string }> };
 
@@ -15,13 +15,14 @@ export const metadata: Metadata = { title: "Editor" };
 export default async function EditorPage({ params }: Props) {
   const { projectId } = await params;
   if (!/^[0-9a-f-]{36}$/i.test(projectId)) notFound();
-  const { supabase } = await requireUser(`/editor/${projectId}`);
+  const { supabase, user } = await requireUser(`/editor/${projectId}`);
   try {
-    const [project, diagram, presentation, profile] = await Promise.all([
+    const [project, diagram, presentation, profile, cloud] = await Promise.all([
       getProject(supabase, projectId),
       getDiagramForProject(supabase, projectId),
       getPresentationForProject(supabase, projectId),
       getProfile(),
+      getCloudStatus(supabase, user.id),
     ]);
     return (
       <EditorShell
@@ -30,7 +31,7 @@ export default async function EditorPage({ params }: Props) {
         diagram={diagram}
         presentation={presentation}
         initialSettings={settingsFromPreferences(profile?.preferences)}
-        cloud={cloudStatus()}
+        cloud={cloud}
       />
     );
   } catch (err) {

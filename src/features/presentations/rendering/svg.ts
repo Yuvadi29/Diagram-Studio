@@ -125,6 +125,12 @@ export interface RenderOptions {
   interactive?: boolean;
   /** Emit width/height attributes (static export) or 100% (responsive). */
   responsive?: boolean;
+  /** Override the text font stack (e.g. a handwritten face for sketch previews). */
+  fontFamily?: string;
+  /** Hand-drawn wobble on the diagram (whiteboard look). */
+  sketch?: boolean;
+  /** Prefix for SVG ids, so several renders can share one HTML document. Default "ds". */
+  idPrefix?: string;
 }
 
 export function renderFrameSvg(model: PresentationModel, frame: FrameState, opts: RenderOptions = {}): string {
@@ -275,5 +281,16 @@ export function renderFrameSvg(model: PresentationModel, frame: FrameState, opts
   }
 
   parts.push(`</svg>`);
-  return parts.join("");
+  let out = parts.join("");
+  if (opts.sketch) {
+    out = out.replace(
+      "</defs>",
+      `<filter id="ds-rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="${r(3.2 * k)}" xChannelSelector="R" yChannelSelector="G"/></filter></defs>`,
+    );
+    out = out.replace("<g transform=", `<g filter="url(#ds-rough)" transform=`);
+  }
+  if (opts.fontFamily) out = out.split(`font-family="${PRESENTATION_FONT}"`).join(`font-family="${escapeXml(opts.fontFamily)}"`);
+  const prefix = opts.idPrefix && opts.idPrefix !== "ds" ? opts.idPrefix.replace(/[^a-zA-Z0-9_-]/g, "") : null;
+  if (prefix) out = out.split('id="ds-').join(`id="${prefix}-`).split("url(#ds-").join(`url(#${prefix}-`);
+  return out;
 }

@@ -5,13 +5,13 @@ import { ProfileForm } from "@/components/settings/profile-form";
 import { AppearanceForm } from "@/components/settings/appearance-form";
 import { getProfile, requireUser } from "@/lib/auth/session";
 import { settingsFromPreferences } from "@/features/ai/services/settings";
-import { cloudStatus } from "@/features/ai/services/server";
+import { getCloudStatus } from "@/features/ai/services/server";
 
 export const metadata: Metadata = { title: "Settings" };
 
 export default async function SettingsPage() {
   const { supabase, user } = await requireUser("/settings");
-  const profile = await getProfile();
+  const [profile, cloud] = await Promise.all([getProfile(), getCloudStatus(supabase, user.id)]);
   const since = new Date(Date.now() - 30 * 24 * 3600_000).toISOString();
   const { data: usage } = await supabase.from("ai_usage").select("provider,status,input_tokens,output_tokens").gte("created_at", since).limit(1000);
   const totals = (usage ?? []).reduce(
@@ -36,10 +36,10 @@ export default async function SettingsPage() {
       <Card id="ai">
         <CardHeader>
           <CardTitle>AI provider</CardTitle>
-          <CardDescription>Choose where diagrams are generated. Diagram Studio never switches providers on its own.</CardDescription>
+          <CardDescription>Use your own Gemini API key, or run models locally with Ollama. Diagram Studio never switches providers on its own.</CardDescription>
         </CardHeader>
         <CardContent>
-          <ProviderSettingsForm initial={settingsFromPreferences(profile?.preferences)} cloud={cloudStatus()} />
+          <ProviderSettingsForm initial={settingsFromPreferences(profile?.preferences)} cloud={cloud} />
           <p className="mt-4 border-t pt-4 text-xs text-muted-foreground">
             Last 30 days: {totals.requests} AI request{totals.requests === 1 ? "" : "s"} · {totals.tokens.toLocaleString()} tokens · {totals.errors} failed
           </p>

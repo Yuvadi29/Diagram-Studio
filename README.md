@@ -7,7 +7,7 @@ Describe a technical concept in plain language. Diagram Studio generates a struc
 - **AI diagram generation:** prompt → validated `DiagramDSL` → deterministic layout → native Excalidraw elements
 - **Editable by default:** the real Excalidraw editor, with autosave, version history and undo
 - **AI modifications that preserve your work:** structured patch operations, previewed as a diff before they're applied; untouched nodes keep their positions and styling
-- **Local or cloud AI:** Ollama (runs in your browser against your own machine) or Gemini (server-side); never switches silently
+- **Bring your own AI:** each user adds their own Gemini API key and chooses the model, or runs models locally with Ollama; never switches silently
 - **Scene-based presentations:** progressive reveal, highlight/dim, per-format cameras, fade/zoom transitions, a full-screen player with keyboard control
 - **Two first-class formats:** landscape and portrait get independent layouts that share the same logical ids; manual adjustments are never discarded
 - **Exports:** PNG, SVG, `.excalidraw`, scene images (zip), project JSON, MP4 via a background Remotion worker
@@ -22,16 +22,24 @@ Describe a technical concept in plain language. Diagram Studio generates a struc
 2. **Create the database schema (one time).** In the Supabase dashboard, open **SQL Editor → New query**, paste the whole of [`supabase/setup.sql`](supabase/setup.sql), and click **Run**. It's safe to run again.
    *CLI alternative:* `npx supabase link --project-ref <ref>` then `npx supabase db push` (applies `supabase/migrations/`; also no Docker).
 3. **Configure auth.** Go to **Authentication → URL Configuration**. Set *Site URL* to `http://localhost:3000` (your deployed URL later) and add `http://localhost:3000/auth/callback` to *Redirect URLs*. Email confirmation can stay on; sign-up then sends a confirmation link.
-4. **Environment:** `cp .env.example .env.local`, then fill in `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (Project Settings → API Keys). Add `GEMINI_API_KEY` for cloud AI.
+4. **Environment:** `cp .env.example .env.local`, then fill in `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (Project Settings → API Keys) and set `API_KEY_ENCRYPTION_SECRET` (`openssl rand -base64 32`).
 5. **Run:** `bun dev`, then open http://localhost:3000.
 
 Sign up, click **Create new diagram**, and try *“Explain how a RAG architecture works.”* If you skipped step 2, the app shows a setup screen with a direct link to your project's SQL Editor instead of an error.
 
 > Prefer a fully local stack? `supabase start` (needs Docker) followed by `supabase db reset` works too; use the URL and keys from `supabase status`.
 
-### Cloud AI (Gemini)
+### Cloud AI (Gemini): bring your own key
 
-Set `GEMINI_API_KEY` (from [Google AI Studio](https://aistudio.google.com/apikey)) and optionally `GEMINI_MODEL` (default `gemini-3.8-flash`). The key is only read by server route handlers and is never sent to the browser. Requests are rate-limited per user (`AI_RATE_LIMIT_PER_10_MIN`, `AI_RATE_LIMIT_PER_DAY`), and usage is recorded in `ai_usage`.
+There is no app-wide Gemini key. Each user, in **Settings → AI provider** (or the editor's AI settings):
+
+1. pastes their own key from [Google AI Studio](https://aistudio.google.com/apikey) and clicks **Verify key**; the server checks it with Google,
+2. **chooses a model** from the list of Gemini models that key can actually use,
+3. saves.
+
+The key is encrypted on the server (AES-256-GCM using `API_KEY_ENCRYPTION_SECRET`), stored in `user_ai_keys` (row-level security: owner only), and never sent back to the browser; the UI only shows its last four characters. All Gemini calls are made server-side with the user's own key, so usage is billed to their Google account. Users can replace or remove their key at any time. Keep `API_KEY_ENCRYPTION_SECRET` stable: if it changes, saved keys can't be decrypted and users are asked to add them again.
+
+Per-user request limits (`AI_RATE_LIMIT_PER_10_MIN`, `AI_RATE_LIMIT_PER_DAY`) still protect the server, and usage is recorded in `ai_usage`.
 
 ### Local AI (Ollama)
 
@@ -73,6 +81,7 @@ prompt ──► AI provider (Ollama in browser | Gemini on server)
 | `src/features/excalidraw/services` | The only code that touches the live Excalidraw API |
 | `src/features/ai` | Provider abstraction, Ollama + Gemini transports, prompts, structured-output schemas, validate/repair loop, rate limits, usage |
 | `src/features/presentations` | Scene schema, auto-generation, reconciliation, format layouts, cameras, frame interpolation, SVG renderer |
+| `src/components/landing`, `src/app/landing.css` | Public landing page; its demos run on the real presentation engine (no video files) |
 | `src/features/exports` | Client exports (scene images, JSON), Remotion composition, background render worker |
 | `src/app/api` | Authenticated route handlers (projects, diagrams, versions, presentations, scenes, AI, exports, profile) |
 | `supabase/migrations`, `supabase/setup.sql` | Schema, RLS policies, RPCs (`create_project`, `duplicate_project`, `replace_scenes`, `claim_export_job`), storage bucket |
@@ -131,7 +140,7 @@ Vercel limits request bodies to ~4.5 MB. Diagrams are typically a few hundred KB
 
 - Row Level Security on every user-owned table; ownership is also checked through parent rows (diagrams → projects, scenes → presentations). The RLS test suite proves another user can't read or write anything.
 - All API routes authenticate with the user's session; Postgres enforces RLS on every query.
-- Cloud AI keys and the service-role key are server-only (`server-only` guards).
+- Users' Gemini keys are encrypted at rest, never returned to the browser, and only used server-side; the secret key is server-only (`server-only` guards).
 - All AI output is parsed with Zod and validated for referential integrity; no model output is ever executed.
 - Request size limits and input validation on every route; per-user AI rate limits backed by the database.
 

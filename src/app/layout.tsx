@@ -8,6 +8,7 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   title: { default: "Diagram Studio", template: "%s · Diagram Studio" },
   description: "Turn complex ideas into visual stories. Generate editable diagrams with AI and present them scene by scene.",
   icons: { icon: "/icon.svg" },

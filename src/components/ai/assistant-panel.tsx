@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { ArrowUp, Check, ChevronDown, Cloud, Cpu, Minus, Pencil, Plus, RotateCcw, Settings2, Sparkles, Square, TriangleAlert, Undo2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -44,6 +43,8 @@ export interface AssistantPanelProps {
   diagram: DiagramDSL;
   settings: AISettings;
   cloudConfigured: boolean | null;
+  /** The Gemini model the user chose (shown in the provider pill). */
+  cloudModel?: string | null;
   selectedNodeIds: string[];
   onProviderChange: (provider: AISettings["provider"]) => void;
   onOpenSettings: () => void;
@@ -190,7 +191,7 @@ export function AssistantPanel(props: AssistantPanelProps) {
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs text-muted-foreground hover:text-foreground" aria-label="Choose AI provider">
             <ProviderIcon className="size-3.5" />
-            {settings.provider === "ollama" ? settings.ollamaModel || "Ollama" : "Cloud"}
+            {settings.provider === "ollama" ? settings.ollamaModel || "Ollama" : props.cloudModel || "Gemini"}
             <ChevronDown className="size-3" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-60">
@@ -198,7 +199,7 @@ export function AssistantPanel(props: AssistantPanelProps) {
             <DropdownMenuRadioGroup value={settings.provider} onValueChange={(v) => props.onProviderChange(v as AISettings["provider"])}>
               <DropdownMenuRadioItem value="gemini">
                 {PROVIDER_LABELS.gemini}
-                {props.cloudConfigured === false && <span className="ml-auto text-[10px] text-destructive">not configured</span>}
+                {props.cloudConfigured === false && <span className="ml-auto text-[10px] text-muted-foreground">needs key</span>}
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="ollama">{PROVIDER_LABELS.ollama}</DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
@@ -269,7 +270,7 @@ export function AssistantPanel(props: AssistantPanelProps) {
                   )}
                   {settings.provider === "ollama" && props.cloudConfigured && (
                     <Button size="sm" variant="ghost" onClick={() => props.onProviderChange("gemini")}>
-                      <Cloud /> Switch to cloud AI
+                      <Cloud /> Switch to Gemini
                     </Button>
                   )}
                 </div>
@@ -393,13 +394,18 @@ export function AssistantPanel(props: AssistantPanelProps) {
           </button>
         )}
         {settings.provider === "gemini" && props.cloudConfigured === false && (
-          <p className="mt-2 text-xs text-destructive">
-            Cloud AI isn’t configured on this server.{" "}
-            <button className="underline" onClick={() => props.onProviderChange("ollama")}>
-              Use local Ollama
-            </button>{" "}
-            or <Link href="/settings#ai" className="underline">open settings</Link>.
-          </p>
+          <div className="mt-2 rounded-md border border-primary/30 bg-primary/5 p-2.5 text-xs">
+            <p className="font-medium">Add your Gemini API key to use cloud AI</p>
+            <p className="mt-0.5 text-muted-foreground">Diagram Studio uses your own key and the model you choose.</p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              <Button size="sm" onClick={props.onOpenSettings}>
+                <Settings2 /> Set up Gemini
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => props.onProviderChange("ollama")}>
+                <Cpu /> Use local Ollama
+              </Button>
+            </div>
+          </div>
         )}
       </div>
     </div>

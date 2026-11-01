@@ -18,6 +18,8 @@ export interface UserPreferences {
   provider?: "gemini" | "ollama";
   ollamaUrl?: string;
   ollamaModel?: string;
+  /** The Gemini model the user chose (their own API key is stored separately, encrypted). */
+  geminiModel?: string;
   theme?: "dark" | "light";
 }
 

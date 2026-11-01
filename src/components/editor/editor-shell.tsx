@@ -97,6 +97,7 @@ export function EditorShell(props: EditorShellProps) {
   const [selectedEdgeIds, setSelectedEdgeIds] = useState<string[]>([]);
   const selectionKey = useRef("");
   const [settings, setSettings] = useState<AISettings>(props.initialSettings);
+  const [cloud, setCloud] = useState<CloudStatus>(props.cloud);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [versionsOpen, setVersionsOpen] = useState(false);
   const [leftOpen, setLeftOpen] = useState(true);
@@ -354,7 +355,8 @@ export function EditorShell(props: EditorShellProps) {
     const next = { ...settings, provider };
     setSettings(next);
     api.patch("/api/profile", { preferences: { provider } }).catch(() => undefined);
-    toast.message(`Using ${provider === "ollama" ? "local Ollama" : "cloud AI"}`);
+    toast.message(`Using ${provider === "ollama" ? "local Ollama" : "Gemini"}`);
+    if (provider === "gemini" && !cloud.configured) setSettingsOpen(true);
   }
 
   // ── Inspector edits go through the patch pipeline (validated, position-preserving) ──
@@ -657,7 +659,8 @@ export function EditorShell(props: EditorShellProps) {
                 <AssistantPanel
                   diagram={dsl}
                   settings={settings}
-                  cloudConfigured={props.cloud.configured}
+                  cloudConfigured={cloud.configured}
+                  cloudModel={cloud.model}
                   selectedNodeIds={selectedNodeIds}
                   onProviderChange={(p) => void changeProvider(p)}
                   onOpenSettings={() => setSettingsOpen(true)}
@@ -710,14 +713,15 @@ export function EditorShell(props: EditorShellProps) {
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>AI provider</DialogTitle>
-            <DialogDescription>Choose where diagrams are generated. Requests never switch providers on their own.</DialogDescription>
+            <DialogDescription>Use your own Gemini API key or a local Ollama model. Requests never switch providers on their own.</DialogDescription>
           </DialogHeader>
           <ProviderSettingsForm
             initial={settings}
-            cloud={props.cloud}
+            cloud={cloud}
             compact
-            onSaved={(s) => {
+            onSaved={(s, c) => {
               setSettings(s);
+              setCloud(c);
               setSettingsOpen(false);
             }}
           />

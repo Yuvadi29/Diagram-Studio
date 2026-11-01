@@ -8,7 +8,7 @@ The code was written in a sandbox where the npm registry was blocked, so **depen
 
 | Check | Result |
 |---|---|
-| Unit tests for all core logic (DSL validation/repair, patches, diffs, layout, Excalidraw adapter, scenes, formats, cameras, interpolation, SVG renderer, AI orchestration with repair loop, Ollama + Gemini providers, video job builder) | **89 passing.** Run with a vitest-compatible harness, using locally available copies of zod v4 and a dagre port |
+| Unit tests for all core logic (DSL validation/repair, patches, diffs, layout, Excalidraw adapter, scenes, formats, cameras, interpolation, SVG renderer, AI orchestration with repair loop, Ollama + Gemini providers, video job builder) | **96 passing.** Run with a vitest-compatible harness, using locally available copies of zod v4 and a dagre port |
 | Strict TypeScript on the core modules (real zod types) | **Clean** |
 | TypeScript on the whole app (pages, components, routes) against stand-in stubs for third-party packages | **Clean.** This catches mismatched props, imports and signatures in our own code, but not misuse of third-party APIs |
 | Supabase migrations + RLS on real PostgreSQL 16 (with auth/storage stubs) | **Passing:** isolation between users, blocked cross-user writes, anon access, RPCs, cascade deletes, worker job claiming |
@@ -18,6 +18,8 @@ The code was written in a sandbox where the npm registry was blocked, so **depen
 **First things to run on your machine:** `bun install && bun run check`, then `bun dev` and walk the journey, then `bun run test:e2e`. The likeliest friction points are listed under *Known risks*.
 
 ## Changelog
+- **1 Nov 2026 (launch prep):** New public landing page (`src/app/page.tsx`, `src/components/landing/*`, `src/app/landing.css`). The hero is a live demo driven by the real presentation engine: a prompt types itself, the RAG diagram sketches in, then plays as a presentation that switches from 16:9 to 9:16. Also an interactive "ask for changes" demo, a side-by-side formats stepper, features, BYOK/Ollama, FAQ and CTA. Global pause control, reduced-motion support, and responsive down to 390px. Added a social share image, `robots.txt` and `sitemap.xml`. Signed-in visitors now see the landing page with an "Open app" button instead of being redirected.
+- **1 Nov 2026 (later):** Cloud AI is now **bring-your-own-key**: there is no app-wide Gemini key (`GEMINI_API_KEY` / `GEMINI_MODEL` removed). Users paste their own key in Settings → AI provider, which is verified with Google; then they choose from the Gemini models that key can use. Keys are encrypted with AES-256-GCM (`API_KEY_ENCRYPTION_SECRET`), stored in the new `user_ai_keys` table (owner-only RLS), and never returned to the browser. New routes: `GET/PUT/DELETE /api/ai/gemini`, `POST /api/ai/gemini/models`. Added 6 tests (95 unit tests total) and 2 RLS assertions.
 - **1 Nov 2026:** First run on a hosted Supabase project failed with `Could not find the table 'public.projects'` because the migrations hadn't been applied. Added `supabase/setup.sql` (all migrations in one file, safe to re-run, verified by running it three times in a row), explicit Data API grants for newer projects, support for publishable/secret keys (legacy anon/service-role still accepted), and a setup screen (`SetupRequired`) that replaces the crash when the schema is missing. Docker is no longer needed: the README's quick start now targets a hosted project.
 
 ## Completed
@@ -68,7 +70,7 @@ The code was written in a sandbox where the npm registry was blocked, so **depen
 2. **Undo/redo toolbar buttons** dispatch synthetic Ctrl/⌘+Z key events to Excalidraw (its history isn't on the public API). Keyboard undo works regardless.
 3. **Package versions** use caret ranges (`next ^16`, `@excalidraw/excalidraw ^0.18`, `zod ^4`, `@supabase/ssr ^0.7`, `lucide-react ^0.460`). If install resolves something incompatible, pin to the latest of those majors.
 4. **ESLint:** React-Compiler-era rules from newer `eslint-plugin-react-hooks` are downgraded to warnings in `eslint.config.mjs`.
-5. **Gemini:** uses `responseJsonSchema` and falls back automatically to plain JSON mode if the model rejects it.
+5. **Gemini:** uses `responseJsonSchema` and falls back automatically to plain JSON mode if the model rejects it. Model listing relies on `GET /v1beta/models` returning `supportedGenerationMethods`.
 6. **Ollama from an HTTPS site:** depends on the user setting `OLLAMA_ORIGINS` and the browser allowing local network access. The UI explains both.
 
 ## Technical decisions
@@ -78,6 +80,7 @@ The code was written in a sandbox where the npm registry was blocked, so **depen
 - **One renderer for presentations** (pure SVG string), shared by player, studio, scene images and Remotion, giving identical output everywhere.
 - **Format layouts are recomputed on load** (landscape from the editor canvas, portrait automatically) with manual positions overlaid. Edits in the editor show up in presentations, and manual tweaks survive.
 - **Thumbnails are small WebP data URLs** on `projects.thumbnail_url` (≤ 300 KB, enforced by a CHECK constraint). This avoids a storage round-trip per save; Storage is used for videos.
+- **Bring-your-own Gemini key, kept server-side:** the user's key is encrypted at rest and only decrypted inside route handlers. This keeps the PRD rule that cloud keys never reach the browser, works across devices, and keeps usage tracking and rate limits. Changing `API_KEY_ENCRYPTION_SECRET` invalidates saved keys; users are told to re-enter them.
 - **Rate limiting uses the `ai_usage` table**, which works across serverless instances without Redis.
 - **Schema setup without Docker:** `supabase/setup.sql` mirrors `supabase/migrations/` and is idempotent (`if not exists`, `drop … if exists`), so it can be pasted into the SQL Editor; `supabase db push` remains an option.
 - **Versions are explicit snapshots** (AI changes, restores, "Save version", manual edits preceding an AI change), not every autosave.
