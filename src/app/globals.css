@@ -1,56 +1,78 @@
 @import "tailwindcss";
 
-/* Dark-first design tokens. Light theme is opt-in via <html class="light">. */
+/* Diagram Studio design tokens: the ChaiUI theme (ui.chaicode.com). Near-black
+   ink, neutral greys, white solid buttons with asymmetric corners, warm
+   hairline cards, one pale-cream highlight per paragraph, and orange used
+   sparingly: the logo, links on hover, selected states and the presentation
+   highlight. Orange never fills a button, heading, badge or progress bar.
+   Dark is the default; light is opt-in via <html class="light">. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #0b0c10;
-  --foreground: #e8e9ed;
-  --card: #111318;
-  --card-foreground: #e8e9ed;
-  --popover: #13151b;
-  --popover-foreground: #e8e9ed;
-  --primary: #f5b43a;
-  --primary-foreground: #1a1306;
-  --secondary: #1b1e26;
-  --secondary-foreground: #e8e9ed;
-  --muted: #171a21;
-  --muted-foreground: #8b919e;
-  --accent: #1d2029;
-  --accent-foreground: #f1f2f5;
-  --destructive: #ef5350;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.175 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.195 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.225 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: #ffffff;
-  --success: #3ecf8e;
-  --border: #23262f;
-  --input: #2a2e38;
-  --ring: #f5b43a;
-  --sidebar: #0e0f14;
+  --success: #4ade80;
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --sidebar: oklch(0.16 0 0);
   --radius: 0.625rem;
+
+  /* ChaiUI warm accents */
+  --brand: oklch(75% 0.183 55.934);
+  --brand-foreground: oklch(0.205 0 0);
+  --highlight: oklch(0.954 0.038 75.164);
+  --ring: oklch(0.556 0 0);
+  --card-edge: rgb(255 247 237 / 0.15);
+  --card-edge-hover: rgb(255 247 237 / 0.3);
+  --card-fill: rgb(0 0 0 / 0.1);
+  --segment: rgb(124 45 18 / 0.4);
   color-scheme: dark;
 }
 
 .light {
-  --background: #f7f7f8;
-  --foreground: #16181d;
-  --card: #ffffff;
-  --card-foreground: #16181d;
-  --popover: #ffffff;
-  --popover-foreground: #16181d;
-  --primary: #d9931a;
-  --primary-foreground: #ffffff;
-  --secondary: #eef0f3;
-  --secondary-foreground: #16181d;
-  --muted: #f0f1f4;
-  --muted-foreground: #5f6673;
-  --accent: #eceef2;
-  --accent-foreground: #16181d;
-  --destructive: #d93025;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: #ffffff;
-  --success: #0f9d63;
-  --border: #e2e4e9;
-  --input: #d9dce3;
-  --ring: #d9931a;
-  --sidebar: #fbfbfc;
+  --success: #15803d;
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.88 0 0);
+  --sidebar: oklch(0.985 0 0);
+
+  --brand: oklch(66.6% 0.179 58.318);
+  --brand-foreground: oklch(0.985 0 0);
+  --highlight: oklch(0.476 0.114 61.907);
+  --ring: oklch(0.708 0 0);
+  --card-edge: rgb(120 53 15 / 0.15);
+  --card-edge-hover: rgb(120 53 15 / 0.25);
+  --card-fill: rgb(255 255 255 / 0.7);
+  --segment: rgb(254 215 170 / 0.55);
   color-scheme: light;
 }
 
@@ -76,11 +98,20 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-sidebar: var(--sidebar);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-highlight: var(--highlight);
+  --color-card-edge: var(--card-edge);
+  --color-card-edge-hover: var(--card-edge-hover);
+  --color-card-fill: var(--card-fill);
+  --color-segment: var(--segment);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--ff-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-montserrat: var(--ff-montserrat), "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-onest: var(--ff-onest), "Onest", ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
@@ -93,12 +124,72 @@
     @apply bg-background text-foreground antialiased;
     height: 100%;
   }
+  body {
+    font-family: var(--ff-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
+  }
   ::selection {
-    background: color-mix(in oklab, var(--primary) 35%, transparent);
+    background: color-mix(in oklab, var(--brand) 32%, transparent);
   }
   :focus-visible {
-    outline: 2px solid var(--ring);
+    outline: 2px solid color-mix(in oklab, var(--ring) 70%, transparent);
     outline-offset: 2px;
+  }
+}
+
+/* ── ChaiUI utilities ───────────────────────────────────────────────────── */
+
+@layer components {
+  /* Pale-cream Montserrat phrase. One per paragraph. */
+  .ds-highlight {
+    font-family: var(--ff-montserrat), "Montserrat", ui-sans-serif, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    text-transform: capitalize;
+    color: var(--highlight);
+  }
+
+  /* Asymmetric corners: solid buttons round top-right and bottom-left; outline buttons mirror them. */
+  .btn-asym {
+    border-radius: 0 var(--radius) 0 var(--radius);
+  }
+  .btn-asym-mirror {
+    border-radius: var(--radius) 0 var(--radius) 0;
+  }
+
+  /* Warm-hairline card: faint fill, slight blur, no shadow. */
+  .card-chai {
+    border: 1px solid var(--card-edge);
+    border-radius: calc(var(--radius) + 4px);
+    background: var(--card-fill);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    transition: border-color 300ms ease;
+  }
+  .card-chai:hover {
+    border-color: var(--card-edge-hover);
+  }
+
+  /* Page backdrop: the warm hexagon glow, centred at the top, bottom faded out. */
+  .ds-backdrop-host {
+    position: relative;
+    isolation: isolate;
+    overflow-x: clip;
+  }
+  .ds-backdrop {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: -1;
+    width: 2842px;
+    max-width: none;
+    transform: translateX(-50%);
+    pointer-events: none;
+    user-select: none;
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  }
+  .light .ds-backdrop {
+    filter: invert(1) hue-rotate(180deg);
   }
 }
 
@@ -108,9 +199,9 @@
   scrollbar-color: var(--border) transparent;
 }
 
-/* Excalidraw fills its container */
+/* Excalidraw fills its container and picks up the brand colour */
 .excalidraw-host .excalidraw {
-  --color-primary: #f5b43a;
+  --color-primary: var(--brand);
   height: 100%;
 }
 

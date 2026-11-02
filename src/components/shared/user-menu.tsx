@@ -17,7 +17,7 @@ export function Avatar({ name, url, className }: { name: string; url?: string | 
     // eslint-disable-next-line @next/next/no-img-element
     <img src={url} alt="" className={cn("size-7 rounded-full object-cover", className)} />
   ) : (
-    <span className={cn("flex size-7 items-center justify-center rounded-full bg-primary/20 text-xs font-semibold text-primary", className)}>{initials || <User className="size-3.5" />}</span>
+    <span className={cn("flex size-7 items-center justify-center rounded-full border border-card-edge text-xs font-semibold text-foreground", className)}>{initials || <User className="size-3.5" />}</span>
   );
 }
 

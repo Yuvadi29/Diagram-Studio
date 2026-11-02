@@ -19,8 +19,8 @@ export default function OpengraphImage() {
         justifyContent: "center",
         borderRadius: 14,
         background: bg,
-        border: hi ? "4px solid #f5b43a" : "2.5px solid #14161b",
-        boxShadow: hi ? "0 0 30px rgba(245,180,58,0.6)" : "none",
+        border: hi ? "4px solid #fab005" : "2px solid rgba(255,255,255,0.18)",
+        boxShadow: hi ? "0 0 30px rgba(250,176,5,0.5)" : "none",
         fontSize: 20,
         fontWeight: 700,
         color: "#14161b",
@@ -31,21 +31,21 @@ export default function OpengraphImage() {
   );
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", background: "#f1f4f7", fontFamily: "sans-serif" }}>
+      <div style={{ width: "100%", height: "100%", display: "flex", background: "radial-gradient(ellipse 70% 60% at 30% 0%, #4a2309 0%, #0a0a0a 70%)", fontFamily: "sans-serif" }}>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 0 0 72px", width: 640 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 28, fontWeight: 700, color: "#14161b" }}>
-            <div style={{ width: 40, height: 40, borderRadius: 10, background: "#14161b", display: "flex" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 28, fontWeight: 700, color: "#f5f5f5" }}>
+            <div style={{ width: 40, height: 40, borderRadius: 10, border: "3px solid #ff8904", display: "flex" }} />
             Diagram Studio
           </div>
-          <div style={{ marginTop: 34, fontSize: 70, lineHeight: 1, fontWeight: 800, letterSpacing: -3, color: "#14161b" }}>Turn complex ideas into visual stories.</div>
-          <div style={{ marginTop: 26, fontSize: 26, color: "#4a5260" }}>AI diagrams you can edit, presented scene by scene in 16:9 and 9:16.</div>
+          <div style={{ marginTop: 34, fontSize: 70, lineHeight: 1, fontWeight: 700, letterSpacing: -3, color: "#fafafa" }}>Turn complex ideas into visual stories</div>
+          <div style={{ marginTop: 26, fontSize: 26, color: "#a3a3a3" }}>AI diagrams you can edit, presented scene by scene in 16:9 and 9:16.</div>
         </div>
-        <div style={{ position: "relative", display: "flex", flex: 1, margin: 48, borderRadius: 28, background: "#0f1117", border: "3px solid #14161b" }}>
+        <div style={{ position: "relative", display: "flex", flex: 1, margin: 48, borderRadius: 28, background: "#0c0c0c", border: "2px solid rgba(255,247,237,0.18)" }}>
           {node("User", "#b2f2bb", 40, 60)}
           {node("Application", "#a5d8ff", 140, 170)}
           {node("Retriever", "#e9ecef", 40, 280, true)}
           {node("Vector DB", "#d0bfff", 220, 380)}
-          <div style={{ position: "absolute", left: 40, bottom: 34, fontSize: 24, fontWeight: 700, color: "#eceef3" }}>Find what’s relevant</div>
+          <div style={{ position: "absolute", left: 40, bottom: 34, fontSize: 24, fontWeight: 700, color: "#f5f5f5" }}>Find what’s relevant</div>
         </div>
       </div>
     ),

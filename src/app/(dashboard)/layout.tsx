@@ -3,6 +3,7 @@ import { AppSidebar } from "@/components/shared/app-sidebar";
 import { getProfile, requireUser } from "@/lib/auth/session";
 import { checkSchema } from "@/lib/auth/schema-check";
 import { SetupRequired } from "@/components/shared/setup-required";
+import { Backdrop } from "@/components/shared/backdrop";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { supabase, user } = await requireUser();
@@ -15,7 +16,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <Suspense>
         <AppSidebar user={{ name, email: user.email ?? "", avatarUrl: profile?.avatar_url }} />
       </Suspense>
-      <main className="min-w-0 flex-1">{children}</main>
+      <main className="ds-backdrop-host min-w-0 flex-1">
+        <Backdrop />
+        {children}
+      </main>
     </div>
   );
 }

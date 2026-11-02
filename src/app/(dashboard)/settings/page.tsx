@@ -21,10 +21,12 @@ export default async function SettingsPage() {
   );
 
   return (
-    <div className="mx-auto grid max-w-3xl gap-6 px-4 py-6 sm:px-8 sm:py-8">
+    <div className="mx-auto grid max-w-3xl gap-6 px-6 py-8 sm:px-12 sm:py-12">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Settings</h1>
-        <p className="text-sm text-muted-foreground">Manage your profile, API keys, AI provider and account.</p>
+        <h1 className="text-2xl font-medium tracking-tight sm:text-3xl">Settings</h1>
+        <p className="mt-1 text-gray-600 sm:text-lg dark:text-gray-300">
+          Your profile, keys and <span className="ds-highlight">AI provider</span>, in one place.
+        </p>
       </div>
       <Card>
         <CardHeader>
@@ -37,7 +39,7 @@ export default async function SettingsPage() {
       <AISettingsSection
         initial={settingsFromPreferences(profile?.preferences)}
         cloud={cloud}
-        usageLine={`Last 30 days: ${totals.requests} AI request${totals.requests === 1 ? "" : "s"} · ${totals.tokens.toLocaleString()} tokens · ${totals.errors} failed`}
+        usageLine={`Last 30 days: ${totals.requests} AI request${totals.requests === 1 ? "" : "s"}, ${totals.tokens.toLocaleString()} tokens, ${totals.errors} failed`}
       />
       <Card>
         <CardHeader>

@@ -5,10 +5,10 @@ export function Toaster() {
   return (
     <Sonner
       theme="system"
-      position="bottom-right"
+      position="bottom-center"
       toastOptions={{
         classNames: {
-          toast: "!bg-popover !text-popover-foreground !border-border",
+          toast: "!bg-popover !text-popover-foreground !border-card-edge !shadow-none !font-sans",
           description: "!text-muted-foreground",
         },
       }}

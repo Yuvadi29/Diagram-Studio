@@ -62,8 +62,14 @@ export async function applyDiagramToCanvas(api: ExcalidrawAPI, diagram: DiagramD
   const next = syncScene(current, diagram, options);
   await setSceneElements(api, next);
   if (current.length === 0 || options.relayout) {
-    requestAnimationFrame(() => api.scrollToContent(undefined, { fitToContent: true, animate: true }));
+    requestAnimationFrame(() => fitView(api, { animate: true }));
   }
+}
+
+/** Frame the whole scene in the viewport (never zooming in past 100%). */
+export function fitView(api: ExcalidrawAPI, { animate = false } = {}) {
+  if (!api.getSceneElements().length) return;
+  api.scrollToContent(undefined, { fitToViewport: true, viewportZoomFactor: 0.85, maxZoom: 1, animate });
 }
 
 export function selectElements(api: ExcalidrawAPI, ids: string[]) {

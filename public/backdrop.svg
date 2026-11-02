@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2842" height="1500" viewBox="0 0 2842 1500" fill="none">
+<defs>
+<pattern id="hex" width="58.89" height="102" patternUnits="userSpaceOnUse" x="1421" y="0"><path d="M29.44,-17.00 L29.44,17.00 L0.00,34.00 L-29.44,17.00 L-29.44,-17.00 L-0.00,-34.00Z M88.33,-17.00 L88.33,17.00 L58.89,34.00 L29.44,17.00 L29.44,-17.00 L58.89,-34.00Z M58.89,34.00 L58.89,68.00 L29.44,85.00 L-0.00,68.00 L0.00,34.00 L29.44,17.00Z M29.44,85.00 L29.44,119.00 L0.00,136.00 L-29.44,119.00 L-29.44,85.00 L-0.00,68.00Z M88.33,85.00 L88.33,119.00 L58.89,136.00 L29.44,119.00 L29.44,85.00 L58.89,68.00Z" stroke="#ffedd5" stroke-opacity="0.08" stroke-width="1"/></pattern>
+<radialGradient id="glow" cx="1421.0" cy="-80" r="900" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7a3a0e" stop-opacity="0.55"/><stop offset="0.35" stop-color="#4a2309" stop-opacity="0.32"/><stop offset="0.7" stop-color="#25140a" stop-opacity="0.12"/><stop offset="1" stop-color="#0a0a0a" stop-opacity="0"/></radialGradient>
+<radialGradient id="core" cx="1421.0" cy="-40" r="420" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#c8641a" stop-opacity="0.35"/><stop offset="1" stop-color="#c8641a" stop-opacity="0"/></radialGradient>
+<radialGradient id="fade" cx="1421.0" cy="120" r="1050" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff"/><stop offset="0.55" stop-color="#fff" stop-opacity="0.35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<mask id="m"><rect width="2842" height="1500" fill="url(#fade)"/></mask>
+</defs>
+<rect width="2842" height="1500" fill="url(#glow)"/>
+<rect width="2842" height="1500" fill="url(#core)"/>
+<rect width="2842" height="1500" fill="url(#hex)" mask="url(#m)"/>
+</svg>

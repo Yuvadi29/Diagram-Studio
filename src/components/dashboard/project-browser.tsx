@@ -93,12 +93,20 @@ export function ProjectBrowser({ initialProjects, mode }: { initialProjects: Pro
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-8 sm:py-8">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mx-auto max-w-6xl px-6 py-8 sm:px-12 sm:py-12">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{heading}</h1>
-          <p className="text-sm text-muted-foreground">
-            {projects.length === 0 ? "No diagrams yet." : `${projects.length} diagram${projects.length === 1 ? "" : "s"}`}
+          <h1 className="text-2xl font-medium tracking-tight sm:text-3xl">{heading}</h1>
+          <p className="mt-1 text-gray-600 sm:text-lg dark:text-gray-300">
+            {projects.length === 0 ? (
+              <>
+                Describe a system and <span className="ds-highlight">watch it draw</span>.
+              </>
+            ) : (
+              <>
+                {projects.length} diagram{projects.length === 1 ? "" : "s"}, ready to <span className="ds-highlight">edit or present</span>.
+              </>
+            )}
           </p>
         </div>
         <div className="flex gap-2">
@@ -109,7 +117,7 @@ export function ProjectBrowser({ initialProjects, mode }: { initialProjects: Pro
             </div>
           )}
           <NewDiagramDialog>
-            <Button className="shrink-0">
+            <Button variant="solid" className="shrink-0">
               <Plus /> <span className="hidden sm:inline">Create new diagram</span>
               <span className="sm:hidden">New</span>
             </Button>
@@ -118,14 +126,14 @@ export function ProjectBrowser({ initialProjects, mode }: { initialProjects: Pro
       </div>
 
       {projects.length === 0 ? (
-        <div className="rounded-xl border border-dashed bg-card/50 px-6 py-14 text-center">
-          <Sparkles className="mx-auto size-8 text-primary" />
-          <h2 className="mt-4 text-lg font-medium">Start by describing the diagram you want to create.</h2>
+        <div className="card-chai px-6 py-14 text-center">
+          <Sparkles className="mx-auto size-8 text-brand" />
+          <h2 className="mt-4 text-xl font-medium">Start by describing the diagram you want to create.</h2>
           <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">Diagram Studio generates an editable Excalidraw diagram you can refine and turn into a presentation.</p>
           <div className="mx-auto mt-6 grid max-w-2xl gap-2 sm:grid-cols-2">
             {EXAMPLE_PROMPTS.slice(0, 4).map((ex) => (
               <NewDiagramDialog key={ex.label} initialPrompt={{ prompt: ex.prompt, type: ex.type }}>
-                <button className="rounded-lg border bg-card px-4 py-3 text-left text-sm transition-colors hover:border-primary/50">{ex.label}</button>
+                <button className="card-chai cursor-pointer px-4 py-3 text-left text-sm transition-colors hover:text-brand">{ex.label}</button>
               </NewDiagramDialog>
             ))}
           </div>
@@ -135,12 +143,12 @@ export function ProjectBrowser({ initialProjects, mode }: { initialProjects: Pro
       ) : mode === "dashboard" && !query ? (
         <div className="grid gap-10">
           <section>
-            <h2 className="mb-3 text-sm font-medium text-muted-foreground">Recent</h2>
+            <h2 className="mb-4 text-lg font-medium">Recent</h2>
             {grid(recent)}
           </section>
           {projects.length > 4 && (
             <section>
-              <h2 className="mb-3 text-sm font-medium text-muted-foreground">All projects</h2>
+              <h2 className="mb-4 text-lg font-medium">All projects</h2>
               {grid(projects)}
             </section>
           )}

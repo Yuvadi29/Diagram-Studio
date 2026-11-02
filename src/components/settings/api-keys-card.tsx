@@ -58,7 +58,7 @@ export function ApiKeysCard({ cloud, onChange }: { cloud: CloudStatus; onChange:
   return (
     <div className="grid gap-4">
       {!cloud.storageReady && (
-        <p className="flex gap-2 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
+        <p className="flex gap-2 rounded-md border border-destructive/40 p-3 text-xs text-destructive">
           <TriangleAlert className="size-4 shrink-0" /> This server can’t store API keys yet: set API_KEY_ENCRYPTION_SECRET (see README).
         </p>
       )}
@@ -112,7 +112,7 @@ export function ApiKeysCard({ cloud, onChange }: { cloud: CloudStatus; onChange:
               </Button>
             </div>
             {error && (
-              <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+              <p role="alert" className="rounded-md border border-destructive/40 px-3 py-2 text-xs text-destructive">
                 {error}
               </p>
             )}
@@ -136,7 +136,7 @@ export function ApiKeysCard({ cloud, onChange }: { cloud: CloudStatus; onChange:
         <ShieldCheck className="size-4 shrink-0 text-success" /> Keys are verified with the provider, encrypted on our server, and never shown again or sent back to your browser. Usage is billed to your own account.
       </p>
       {cloud.hasKey && !cloud.model && (
-        <p className="flex items-center gap-1.5 text-xs text-primary">
+        <p className="flex items-center gap-1.5 text-xs text-brand">
           <Check className="size-3.5" /> Key saved. Now choose a model under AI provider.
         </p>
       )}

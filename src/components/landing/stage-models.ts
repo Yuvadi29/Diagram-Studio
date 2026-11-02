@@ -14,7 +14,7 @@ import type { Topic } from "./topics";
 
 /**
  * Everything the landing page renders for one topic, built once and cached.
- * `canvas` is the light, sketchy editor view laid out from the union of the
+ * `canvas` is the sketchy (dark-theme) editor view laid out from the union of the
  * diagram before and after the AI edit, so nothing jumps when the edit lands.
  */
 export interface TopicModels {
@@ -29,7 +29,7 @@ export interface TopicModels {
   plainAfter: PresentationScene;
 }
 
-const STAGE_BG = "#0f1117";
+const STAGE_BG = "#0c0c0c";
 const cache = new Map<string, TopicModels>();
 const ALL = { landscape: { mode: "all" as const }, portrait: { mode: "all" as const } };
 
@@ -53,7 +53,7 @@ export function modelsFor(t: Topic): TopicModels {
 
   const pad = 28;
   const ccfg = { ...DEFAULT_FORMATS.landscape, backgroundColor: "transparent", padding: pad };
-  const c = buildPresentationModel(t.union, "landscape", effectiveFormatConfig(t.union, "landscape", ccfg), { theme: "light" });
+  const c = buildPresentationModel(t.union, "landscape", effectiveFormatConfig(t.union, "landscape", ccfg), { theme: "dark" });
   const canvas: PresentationModel = { ...c, stage: { x: pad, y: pad, width: c.width - pad * 2, height: c.height - pad * 2 } };
 
   const stage = (f: PresentationFormat) =>

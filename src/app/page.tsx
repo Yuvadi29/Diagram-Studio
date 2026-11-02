@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { LandingPage } from "@/components/landing/landing-page";
-import { bricolage, kalam } from "@/components/landing/fonts";
 import { getSessionUser } from "@/lib/auth/session";
 import { publicEnv } from "@/lib/env";
 import "./landing.css";
@@ -23,7 +22,7 @@ export default async function Home() {
     signedIn = Boolean(await getSessionUser());
   }
   return (
-    <div className={`${bricolage.variable} ${kalam.variable}`}>
+    <div>
       <LandingPage signedIn={signedIn} />
     </div>
   );

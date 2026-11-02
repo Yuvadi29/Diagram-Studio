@@ -20,7 +20,7 @@ const r = (n: number) => Math.round(n * 100) / 100;
 
 function palette(model: PresentationModel) {
   return model.theme === "dark"
-    ? { edge: "#9aa4b2", edgeLabelBg: "#1a1d26", edgeLabelText: "#e6e8ee", nodeText: "#1e1e1e", group: "#5c6370", groupText: "#aab2bf", accent: "#fab005", caption: "#f1f3f5", captionSub: "#aab2bf", progress: "#2a2f3a" }
+    ? { edge: "#9aa4b2", edgeLabelBg: "#18191c", edgeLabelText: "#e6e8ee", nodeText: "#1e1e1e", group: "#5c6370", groupText: "#aab2bf", accent: "#fab005", caption: "#f5f5f5", captionSub: "#a3a3a3", progress: "#2a2b2e" }
     : { edge: "#495057", edgeLabelBg: "#ffffff", edgeLabelText: "#212529", nodeText: "#1e1e1e", group: "#adb5bd", groupText: "#495057", accent: "#e8590c", caption: "#111418", captionSub: "#495057", progress: "#e9ecef" };
 }
 

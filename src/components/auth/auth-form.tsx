@@ -46,19 +46,29 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   }
 
   return (
-    <div className="rounded-xl border bg-card p-6">
-      <h1 className="text-xl font-semibold tracking-tight">{mode === "login" ? "Welcome back" : "Create your account"}</h1>
-      <p className="mt-1 text-sm text-muted-foreground">{mode === "login" ? "Log in to your diagrams." : "Start turning ideas into visual stories."}</p>
+    <div className="card-chai p-7 sm:opacity-100">
+      <h1 className="text-2xl font-medium tracking-tight">{mode === "login" ? "Welcome back" : "Create your account"}</h1>
+      <p className="mt-1.5 text-sm text-muted-foreground">
+        {mode === "login" ? (
+          <>
+            Log in and pick up <span className="ds-highlight">where you left off</span>.
+          </>
+        ) : (
+          <>
+            Start turning ideas into <span className="ds-highlight">visual stories</span>.
+          </>
+        )}
+      </p>
       <button
         type="button"
         onClick={() => void continueWithGoogle()}
         disabled={loading}
-        className="mt-6 flex h-11 w-full items-center justify-center gap-3 rounded-md border border-input bg-white text-sm font-medium text-[#1f1f1f] transition-colors hover:bg-[#f2f2f2] disabled:opacity-60"
+        className="btn-asym mt-6 flex h-11 w-full cursor-pointer items-center justify-center gap-3 border border-neutral-200 bg-white text-sm font-medium text-[#1f1f1f] transition-colors duration-200 hover:bg-neutral-200 disabled:opacity-60"
       >
         {loading ? <Spinner className="text-[#1f1f1f]" /> : <GoogleMark />} Continue with Google
       </button>
       {error && (
-        <p role="alert" className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p role="alert" className="mt-4 rounded-md border border-destructive/40 px-3 py-2 text-sm text-destructive">
           {error}
         </p>
       )}
@@ -67,14 +77,14 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         {mode === "login" ? (
           <>
             New here?{" "}
-            <Link href={`/signup${next !== "/dashboard" ? `?next=${encodeURIComponent(next)}` : ""}`} className="text-foreground underline-offset-4 hover:underline">
+            <Link href={`/signup${next !== "/dashboard" ? `?next=${encodeURIComponent(next)}` : ""}`} className="text-foreground underline-offset-4 transition-colors hover:text-brand hover:underline">
               Create an account
             </Link>
           </>
         ) : (
           <>
             Already have an account?{" "}
-            <Link href="/login" className="text-foreground underline-offset-4 hover:underline">
+            <Link href="/login" className="text-foreground underline-offset-4 transition-colors hover:text-brand hover:underline">
               Log in
             </Link>
           </>

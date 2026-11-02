@@ -25,7 +25,7 @@ export function MotionToggle() {
   const { paused, reduced, toggle } = useMotion();
   if (reduced) return null;
   return (
-    <button type="button" className="lp-motion-toggle" onClick={toggle} aria-pressed={paused}>
+    <button type="button" className="c-link-btn" onClick={toggle} aria-pressed={paused}>
       {paused ? "Play animations" : "Pause animations"}
     </button>
   );

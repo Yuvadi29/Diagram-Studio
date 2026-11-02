@@ -12,7 +12,7 @@ function Tooltip({ children, content, side = "bottom" }: { children: React.React
     <TooltipPrimitive.Root>
       <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
       <TooltipPrimitive.Portal>
-        <TooltipPrimitive.Content side={side} sideOffset={6} className={cn("z-50 rounded-md border bg-popover px-2 py-1 text-xs text-popover-foreground shadow-lg")}>
+        <TooltipPrimitive.Content side={side} sideOffset={6} className={cn("z-50 rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background")}>
           {content}
         </TooltipPrimitive.Content>
       </TooltipPrimitive.Portal>

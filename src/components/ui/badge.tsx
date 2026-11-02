@@ -2,14 +2,15 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const badgeVariants = cva("inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium whitespace-nowrap [&_svg]:size-3", {
+/** ChaiUI chips: meaning is carried by coloured text and a thin outline, never a filled pill. */
+const badgeVariants = cva("inline-flex items-center gap-1 rounded-md border bg-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap [&_svg]:size-3", {
   variants: {
     variant: {
-      default: "border-transparent bg-primary/15 text-primary",
-      secondary: "border-transparent bg-secondary text-secondary-foreground",
+      default: "border-brand/40 text-brand",
+      secondary: "border-card-edge text-foreground",
       outline: "text-muted-foreground",
-      success: "border-transparent bg-success/15 text-success",
-      destructive: "border-transparent bg-destructive/15 text-destructive",
+      success: "border-success/40 text-success",
+      destructive: "border-destructive/40 text-destructive",
     },
   },
   defaultVariants: { variant: "default" },

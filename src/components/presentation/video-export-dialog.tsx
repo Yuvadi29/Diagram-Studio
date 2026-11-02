@@ -109,7 +109,7 @@ export function VideoExportDialog({
               role="radio"
               aria-checked={format === o.f}
               onClick={() => setFormat(o.f)}
-              className={cn("flex items-start gap-2 rounded-lg border p-3 text-left", format === o.f ? "border-primary bg-primary/5" : "hover:border-muted-foreground/40")}
+              className={cn("flex items-start gap-2 rounded-lg border p-3 text-left", format === o.f ? "border-brand bg-brand/5" : "hover:border-muted-foreground/40")}
             >
               <o.icon className="mt-0.5 size-4" />
               <span>
@@ -163,7 +163,7 @@ export function VideoExportDialog({
                   </div>
                   {i.status === "rendering" && (
                     <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                      <div className="h-full bg-primary transition-all" style={{ width: `${Math.round(i.progress * 100)}%` }} />
+                      <div className="h-full bg-foreground/70 transition-all" style={{ width: `${Math.round(i.progress * 100)}%` }} />
                     </div>
                   )}
                   {i.status === "failed" && i.error_message && <p className="text-xs text-destructive">{i.error_message}</p>}

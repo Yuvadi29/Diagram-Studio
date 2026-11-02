@@ -264,7 +264,7 @@ export function StudioShell(props: StudioProps) {
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <header className="flex h-12 shrink-0 items-center gap-2 border-b px-2">
+      <header className="flex h-12 shrink-0 items-center gap-2 border-b border-card-edge px-2">
         <Tooltip content="Back to editor">
           <Button variant="ghost" size="icon-sm" asChild>
             <Link href={`/editor/${props.projectId}`} aria-label="Back to editor">
@@ -341,7 +341,7 @@ export function StudioShell(props: StudioProps) {
               json: () => exportProjectJson({ title: props.title, diagram, excalidraw: { elements: props.excalidrawElements }, presentation: { formats, activeFormat: format }, scenes }),
             }}
           />
-          <Button size="sm" asChild className={cn(!scenes.length && "pointer-events-none opacity-50")}>
+          <Button size="sm" variant="solid" asChild className={cn(!scenes.length && "pointer-events-none opacity-50")}>
             <Link
               href={playHref}
               onClick={async (e) => {

@@ -166,9 +166,9 @@ export function ProviderSettingsForm({
             role="radio"
             aria-checked={settings.provider === opt.id}
             onClick={() => setSettings((s) => ({ ...s, provider: opt.id }))}
-            className={cn("flex items-start gap-3 rounded-lg border p-3 text-left transition-colors", settings.provider === opt.id ? "border-primary bg-primary/5" : "hover:border-muted-foreground/40")}
+            className={cn("flex items-start gap-3 rounded-lg border p-3 text-left transition-colors", settings.provider === opt.id ? "border-brand bg-brand/5" : "hover:border-muted-foreground/40")}
           >
-            <opt.icon className={cn("mt-0.5 size-4", settings.provider === opt.id ? "text-primary" : "text-muted-foreground")} />
+            <opt.icon className={cn("mt-0.5 size-4", settings.provider === opt.id ? "text-brand" : "text-muted-foreground")} />
             <span className="min-w-0">
               <span className="flex items-center gap-2 text-sm font-medium">
                 {opt.title}
@@ -184,7 +184,7 @@ export function ProviderSettingsForm({
       {settings.provider === "gemini" && (
         <div className="grid gap-4 rounded-lg border p-4">
           {!cloud.storageReady && (
-            <p className="flex gap-2 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
+            <p className="flex gap-2 rounded-md border border-destructive/40 p-3 text-xs text-destructive">
               <TriangleAlert className="size-4 shrink-0" /> This server can’t store API keys yet: the administrator needs to set API_KEY_ENCRYPTION_SECRET (see README).
             </p>
           )}
@@ -211,7 +211,7 @@ export function ProviderSettingsForm({
                 </p>
               )}
               {keyError && (
-                <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive" role="alert">
+                <p className="rounded-md border border-destructive/40 px-3 py-2 text-xs text-destructive" role="alert">
                   {keyError}
                 </p>
               )}
@@ -283,7 +283,7 @@ export function ProviderSettingsForm({
               </>
             )}
             {keyError && (
-              <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive" role="alert">
+              <p className="rounded-md border border-destructive/40 px-3 py-2 text-xs text-destructive" role="alert">
                 {keyError}
               </p>
             )}
@@ -353,7 +353,7 @@ export function ProviderSettingsForm({
           </div>
 
           {conn && (
-            <div className={cn("rounded-md border p-3 text-xs", conn.ok ? "border-success/30 bg-success/10 text-success" : "border-destructive/30 bg-destructive/10 text-destructive")} role="status">
+            <div className={cn("rounded-md border p-3 text-xs", conn.ok ? "border-success/40 text-success" : "border-destructive/40 text-destructive")} role="status">
               {conn.ok ? `Connected to Ollama ${conn.version ?? ""}: ${conn.models.length} model${conn.models.length === 1 ? "" : "s"} installed.` : conn.error}
             </div>
           )}

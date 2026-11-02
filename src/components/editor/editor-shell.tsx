@@ -26,6 +26,7 @@ import { PENDING_PROMPT_KEY } from "@/features/diagrams/services/examples";
 import { fromExcalidrawScene, getNodeBoxes, getNodeStyles, type ExElement } from "@/features/excalidraw/adapter";
 import {
   applyDiagramToCanvas,
+  fitView,
   exportExcalidrawFile,
   exportPng,
   exportSvg,
@@ -133,6 +134,23 @@ export function EditorShell(props: EditorShellProps) {
       .catch(() => setSceneCount(0));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // ── Canvas ready: make sure the diagram is on screen ──
+  // The saved Excalidraw scene is the source of truth. If it has no diagram
+  // elements but the diagram itself has components (e.g. an interrupted save),
+  // rebuild the drawing from the diagram; then frame everything in view.
+  useEffect(() => {
+    const a = apiRef.current;
+    if (!apiReady || !a) return;
+    const live = getElements(a).filter((e) => !e.isDeleted);
+    const hasDiagramElements = live.some((e) => (e.customData as { dsKind?: string } | undefined)?.dsKind);
+    if (!hasDiagramElements && dslRef.current.nodes.length > 0) {
+      void applyDiagramToCanvas(a, dslRef.current, { relayout: true }).catch(() => undefined);
+      return;
+    }
+    const frame = requestAnimationFrame(() => fitView(a));
+    return () => cancelAnimationFrame(frame);
+  }, [apiReady]);
 
   // ── Saving ──
   const collect = useCallback(() => {
@@ -518,7 +536,7 @@ export function EditorShell(props: EditorShellProps) {
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
       {/* Top toolbar */}
-      <header className="flex h-12 shrink-0 items-center gap-1 border-b px-2">
+      <header className="flex h-12 shrink-0 items-center gap-1 border-b border-card-edge px-2">
         <Tooltip content="Back to dashboard">
           <Button variant="ghost" size="icon-sm" asChild>
             <Link href="/dashboard" aria-label="Back to dashboard">
@@ -580,7 +598,7 @@ export function EditorShell(props: EditorShellProps) {
             </Button>
           </Tooltip>
           <ExportMenu actions={exportActions} disabled={!apiReady} compact />
-          <Button size="sm" asChild className={cn(dsl.nodes.length === 0 && "pointer-events-none opacity-50")}>
+          <Button size="sm" variant="solid" asChild className={cn(dsl.nodes.length === 0 && "pointer-events-none opacity-50")}>
             <Link href={studioHref} aria-disabled={dsl.nodes.length === 0}>
               <Play /> <span className="hidden sm:inline">Present</span>
             </Link>
@@ -594,8 +612,8 @@ export function EditorShell(props: EditorShellProps) {
       </header>
 
       {draft && (
-        <div className="flex flex-wrap items-center gap-2 border-b border-primary/30 bg-primary/10 px-4 py-2 text-sm">
-          <TriangleAlert className="size-4 text-primary" />
+        <div className="flex flex-wrap items-center gap-2 border-b border-brand/30 px-4 py-2 text-sm">
+          <TriangleAlert className="size-4 text-brand" />
           Unsaved changes from {relativeTime(draft.savedAt)} were found in this browser.
           <Button
             size="sm"

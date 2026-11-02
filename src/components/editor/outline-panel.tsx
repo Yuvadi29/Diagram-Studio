@@ -39,7 +39,7 @@ export function OutlinePanel({
       >
         <NodeIcon type={n.type} />
         <span className="truncate">{n.label}</span>
-        {n.style?.highlight && <span className="ml-auto size-1.5 rounded-full bg-primary" aria-label="highlighted" />}
+        {n.style?.highlight && <span className="ml-auto size-1.5 rounded-full bg-brand" aria-label="highlighted" />}
       </button>
     </li>
   );
@@ -98,7 +98,7 @@ export function OutlinePanel({
       <div className="border-t p-3">
         <div className="rounded-lg border bg-card p-3">
           <p className="flex items-center gap-1.5 text-sm font-medium">
-            <Presentation className="size-4 text-primary" /> Presentation
+            <Presentation className="size-4 text-brand" /> Presentation
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">{sceneCount === null ? "Loading…" : sceneCount === 0 ? "No scenes yet" : `${sceneCount} scene${sceneCount === 1 ? "" : "s"}`}</p>
           <Button asChild size="sm" variant="secondary" className="mt-2 w-full" disabled={diagram.nodes.length === 0}>

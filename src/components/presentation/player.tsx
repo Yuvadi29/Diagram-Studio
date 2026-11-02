@@ -209,7 +209,7 @@ export function Player(props: PlayerProps) {
             {scenes.map((s, i) => (
               <button key={s.id} role="tab" aria-selected={i === index} aria-label={`Scene ${i + 1}: ${s.title}`} onClick={() => goTo(i)} className="group h-4 flex-1 py-1.5">
                 <span className="block h-1 overflow-hidden rounded-full bg-white/20 group-hover:bg-white/35">
-                  <span className="block h-full rounded-full bg-[#f5b43a]" style={{ width: i < index ? "100%" : i === index ? `${(playing || progress >= 1 ? progress : 1) * 100}%` : "0%" }} />
+                  <span className="block h-full rounded-full bg-white/85" style={{ width: i < index ? "100%" : i === index ? `${(playing || progress >= 1 ? progress : 1) * 100}%` : "0%" }} />
                 </span>
               </button>
             ))}

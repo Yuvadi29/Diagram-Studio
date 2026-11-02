@@ -13,7 +13,7 @@ function DropdownMenuContent({ className, sideOffset = 6, ...props }: React.Comp
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
         sideOffset={sideOffset}
-        className={cn("z-50 min-w-44 overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-xl", className)}
+        className={cn("z-50 min-w-44 overflow-hidden rounded-lg border border-card-edge bg-popover/95 p-1 text-popover-foreground backdrop-blur-md", className)}
         {...props}
       />
     </DropdownMenuPrimitive.Portal>
@@ -23,7 +23,7 @@ function DropdownMenuItem({ className, variant, ...props }: React.ComponentProps
   return (
     <DropdownMenuPrimitive.Item
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-accent [&_svg]:size-4 [&_svg]:text-muted-foreground",
+        "relative flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-accent data-[highlighted]:text-brand dark:data-[highlighted]:bg-accent/50 [&_svg]:size-4 [&_svg]:text-muted-foreground data-[highlighted]:[&_svg]:text-brand",
         variant === "destructive" && "text-destructive data-[highlighted]:bg-destructive/10 [&_svg]:text-destructive",
         className,
       )}
@@ -39,7 +39,7 @@ function DropdownMenuRadioItem({ className, children, ...props }: React.Componen
     >
       <span className="absolute left-2 flex size-3.5 items-center justify-center">
         <DropdownMenuPrimitive.ItemIndicator>
-          <span className="block size-2 rounded-full bg-primary" />
+          <span className="block size-2 rounded-full bg-foreground" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}

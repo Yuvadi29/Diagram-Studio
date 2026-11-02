@@ -198,7 +198,7 @@ export function SceneProperties({
                   onClick={() => onChange({ highlightedNodeIds: toggle(scene.highlightedNodeIds, n.id, !hi.has(n.id)), dimmedNodeIds: toggle(scene.dimmedNodeIds, n.id, false) })}
                   aria-label={`Highlight ${n.label}`}
                   aria-pressed={hi.has(n.id)}
-                  className={cn("rounded p-1 disabled:opacity-30", hi.has(n.id) ? "text-primary" : "text-muted-foreground hover:text-foreground")}
+                  className={cn("rounded p-1 disabled:opacity-30", hi.has(n.id) ? "text-brand" : "text-muted-foreground hover:text-foreground")}
                 >
                   <Sparkle className="size-3.5" />
                 </button>
@@ -243,7 +243,7 @@ export function SceneProperties({
                     onClick={() => onChange({ highlightedEdgeIds: toggle(scene.highlightedEdgeIds, e.id, !hiEdges.has(e.id)) })}
                     aria-label="Highlight connection"
                     aria-pressed={hiEdges.has(e.id)}
-                    className={cn("rounded p-1 disabled:opacity-30", hiEdges.has(e.id) ? "text-primary" : "text-muted-foreground hover:text-foreground")}
+                    className={cn("rounded p-1 disabled:opacity-30", hiEdges.has(e.id) ? "text-brand" : "text-muted-foreground hover:text-foreground")}
                   >
                     <Sparkle className="size-3.5" />
                   </button>

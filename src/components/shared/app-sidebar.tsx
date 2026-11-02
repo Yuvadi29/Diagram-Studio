@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, match: (p: string) => p === "/dashboard" },
-  { href: "/projects", label: "My Diagrams", icon: FolderOpen, match: (p: string, v: string | null) => p === "/projects" && v !== "recent" },
-  { href: "/projects?view=recent", label: "Recent Projects", icon: Clock, match: (p: string, v: string | null) => p === "/projects" && v === "recent" },
+  { href: "/projects", label: "My diagrams", icon: FolderOpen, match: (p: string, v: string | null) => p === "/projects" && v !== "recent" },
+  { href: "/projects?view=recent", label: "Recent projects", icon: Clock, match: (p: string, v: string | null) => p === "/projects" && v === "recent" },
   { href: "/settings", label: "Settings", icon: Settings, match: (p: string) => p.startsWith("/settings") },
 ];
 
@@ -29,7 +29,7 @@ export function AppSidebar({ user }: { user: { name: string; email: string; avat
         <ThemeToggle />
       </div>
       <NewDiagramDialog>
-        <Button className="w-full justify-start" onClick={() => setOpen(false)}>
+        <Button variant="outline" className="w-full justify-start" onClick={() => setOpen(false)}>
           <Plus /> New diagram
         </Button>
       </NewDiagramDialog>
@@ -43,10 +43,10 @@ export function AppSidebar({ user }: { user: { name: string; email: string; avat
               onClick={() => setOpen(false)}
               className={cn(
                 "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm transition-colors",
-                active ? "bg-accent font-medium text-foreground" : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
+                active ? "bg-accent/70 font-medium text-foreground dark:bg-white/[0.06]" : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
               )}
             >
-              <item.icon className="size-4" />
+              <item.icon className={cn("size-4", active && "text-brand")} />
               {item.label}
             </Link>
           );
@@ -60,7 +60,7 @@ export function AppSidebar({ user }: { user: { name: string; email: string; avat
 
   return (
     <>
-      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 border-r bg-sidebar md:block">{content}</aside>
+      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 border-r border-card-edge bg-sidebar md:block">{content}</aside>
       <div className="sticky top-0 z-30 flex items-center justify-between border-b bg-background/90 px-4 py-3 backdrop-blur md:hidden">
         <Logo href="/dashboard" className="text-sm" />
         <Button variant="ghost" size="icon-sm" onClick={() => setOpen(true)} aria-label="Open menu">
@@ -69,8 +69,8 @@ export function AppSidebar({ user }: { user: { name: string; email: string; avat
       </div>
       {open && (
         <div className="fixed inset-0 z-40 md:hidden">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} />
-          <aside className="absolute inset-y-0 left-0 w-72 border-r bg-sidebar">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <aside className="absolute inset-y-0 left-0 w-72 border-r border-card-edge bg-sidebar">
             <Button variant="ghost" size="icon-sm" className="absolute top-3 right-3" onClick={() => setOpen(false)} aria-label="Close menu">
               <X />
             </Button>

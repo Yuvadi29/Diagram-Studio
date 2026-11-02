@@ -34,7 +34,7 @@ export function ProfileForm({ email, displayName, avatarUrl }: { email: string; 
       <div className="flex items-center gap-3">
         <Avatar name={name || email} url={avatar || null} className="size-12 text-base" />
         <div className="text-sm">
-          <div className="font-medium">{name || "—"}</div>
+          <div className="font-medium">{name || "Not set"}</div>
           <div className="text-muted-foreground">{email}</div>
         </div>
       </div>

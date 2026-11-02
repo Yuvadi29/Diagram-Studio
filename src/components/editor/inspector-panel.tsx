@@ -204,7 +204,7 @@ function DiagramInspector({
               onClick={() => diagram.layout !== o.v && onUpdate({ layout: o.v }, true)}
               className={cn(
                 "flex items-center justify-center gap-1.5 rounded-md border px-2 py-1.5 text-xs disabled:opacity-50",
-                diagram.layout === o.v ? "border-primary bg-primary/5 text-foreground" : "text-muted-foreground hover:text-foreground",
+                diagram.layout === o.v ? "border-brand bg-brand/5 text-foreground" : "text-muted-foreground hover:text-foreground",
               )}
             >
               <o.icon className="size-3.5" /> {o.label}

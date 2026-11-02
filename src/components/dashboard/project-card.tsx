@@ -17,18 +17,18 @@ export function ProjectCard({
   onDelete: () => void;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40">
+    <div className="card-chai group relative overflow-hidden sm:opacity-90 sm:hover:opacity-100">
       <Link href={`/editor/${project.id}`} className="block" aria-label={`Open ${project.title}`}>
-        <div className="flex aspect-[16/10] items-center justify-center overflow-hidden border-b bg-[#f8f9fa] dark:bg-[#121212]">
+        <div className="flex aspect-[16/10] items-center justify-center overflow-hidden border-b border-card-edge bg-[#f8f9fa] dark:bg-[#121212]">
           {project.thumbnail_url ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={project.thumbnail_url} alt="" className="h-full w-full object-contain p-3 dark:invert-[0.93] dark:hue-rotate-180" />
+            <img src={project.thumbnail_url} alt="" className="h-full w-full object-contain p-3 transition-transform duration-300 group-hover:scale-[1.03] dark:invert-[0.93] dark:hue-rotate-180" />
           ) : (
             <Workflow className="size-8 text-muted-foreground/40" />
           )}
         </div>
         <div className="p-3 pr-10">
-          <h3 className="truncate text-sm font-medium">{project.title}</h3>
+          <h3 className="truncate font-montserrat text-sm font-semibold tracking-tight">{project.title}</h3>
           <p className="mt-0.5 text-xs text-muted-foreground">Edited {relativeTime(project.updated_at)}</p>
         </div>
       </Link>

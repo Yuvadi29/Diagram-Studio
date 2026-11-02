@@ -1,16 +1,18 @@
 import { Database, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabaseProjectRef } from "@/lib/env";
+import { Backdrop } from "./backdrop";
 
 /** Shown instead of the app when the Supabase schema hasn't been created yet. */
 export function SetupRequired({ detail }: { detail?: string }) {
   const ref = supabaseProjectRef();
   const sqlEditor = ref ? `https://supabase.com/dashboard/project/${ref}/sql/new` : "https://supabase.com/dashboard";
   return (
-    <div className="flex min-h-[80vh] items-center justify-center px-4 py-10">
-      <div className="w-full max-w-xl rounded-xl border bg-card p-6">
-        <Database className="size-6 text-primary" />
-        <h1 className="mt-3 text-xl font-semibold">Finish setting up the database</h1>
+    <div className="ds-backdrop-host flex min-h-[80vh] items-center justify-center px-6 py-10">
+      <Backdrop />
+      <div className="card-chai w-full max-w-xl p-7">
+        <Database className="size-6 text-brand" />
+        <h1 className="mt-3 text-2xl font-medium tracking-tight">Finish setting up the database</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           You’re connected to Supabase{ref ? ` (project ${ref})` : ""}, but Diagram Studio’s tables don’t exist there yet. This is a one-time step.
         </p>
@@ -18,7 +20,7 @@ export function SetupRequired({ detail }: { detail?: string }) {
           <li>
             Open the <span className="font-medium">SQL Editor</span> for your project.
             <div className="mt-2">
-              <Button asChild size="sm" variant="secondary">
+              <Button asChild size="sm" variant="solid">
                 <a href={sqlEditor} target="_blank" rel="noreferrer">
                   Open SQL Editor <ExternalLink />
                 </a>

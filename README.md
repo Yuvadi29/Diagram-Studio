@@ -95,7 +95,8 @@ prompt ──► AI provider (Ollama in browser | Gemini on server)
 | `src/features/excalidraw/services` | The only code that touches the live Excalidraw API |
 | `src/features/ai` | Provider abstraction, Ollama + Gemini transports, prompts, structured-output schemas, validate/repair loop, rate limits, usage |
 | `src/features/presentations` | Scene schema, auto-generation, reconciliation, format layouts, cameras, frame interpolation, SVG renderer |
-| `src/components/landing`, `src/app/landing.css` | Public landing page: a scroll-paced story in a pinned product window, rendered live by the real presentation engine (no video files). Demo diagrams live in `landing/topics.ts` |
+| `src/app/globals.css`, `src/lib/fonts.ts` | Design tokens: the ChaiUI theme (near-black, warm hairlines, pale-cream highlights, orange used sparingly), plus the shared utilities (`.ds-highlight`, `.btn-asym`, `.card-chai`, backdrop) |
+| `src/components/landing`, `src/app/landing.css` | Public landing page, in the same ChaiUI style (tokens scoped to `.chai`). Its product demo is rendered live by the real presentation engine (no video files). Demo diagrams live in `landing/topics.ts` |
 | `src/features/exports` | Client exports (scene images, JSON), Remotion composition, background render worker |
 | `src/app/api` | Authenticated route handlers (projects, diagrams, versions, presentations, scenes, AI, exports, profile) |
 | `supabase/migrations`, `supabase/setup.sql` | Schema, RLS policies, RPCs (`create_project`, `duplicate_project`, `replace_scenes`, `claim_export_job`), storage bucket |

@@ -186,7 +186,7 @@ export function AssistantPanel(props: AssistantPanelProps) {
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex items-center justify-between gap-2 border-b px-3 py-2">
         <span className="flex items-center gap-1.5 text-sm font-medium">
-          <Sparkles className="size-4 text-primary" /> AI assistant
+          <Sparkles className="size-4 text-brand" /> AI assistant
         </span>
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs text-muted-foreground hover:text-foreground" aria-label="Choose AI provider">
@@ -221,7 +221,7 @@ export function AssistantPanel(props: AssistantPanelProps) {
                   {EXAMPLE_PROMPTS.slice(0, 4).map((ex) => (
                     <button
                       key={ex.label}
-                      className="rounded-md border px-2.5 py-1.5 text-left text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                      className="rounded-md border px-2.5 py-1.5 text-left text-xs text-muted-foreground transition-colors hover:border-brand/50 hover:text-foreground"
                       onClick={() => {
                         setType(ex.type);
                         send(ex.prompt);
@@ -248,13 +248,13 @@ export function AssistantPanel(props: AssistantPanelProps) {
             );
           if (m.kind === "text")
             return (
-              <div key={m.id} className={cn("mr-4 text-sm whitespace-pre-wrap", m.tone === "info" && "text-muted-foreground", m.tone === "question" && "rounded-lg border border-primary/30 bg-primary/5 p-3")}>
+              <div key={m.id} className={cn("mr-4 text-sm whitespace-pre-wrap", m.tone === "info" && "text-muted-foreground", m.tone === "question" && "rounded-lg border border-brand/30 bg-brand/5 p-3")}>
                 {m.text}
               </div>
             );
           if (m.kind === "error")
             return (
-              <div key={m.id} className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm" role="alert">
+              <div key={m.id} className="rounded-lg border border-destructive/40 p-3 text-sm" role="alert">
                 <p className="flex items-center gap-1.5 font-medium text-destructive">
                   <TriangleAlert className="size-4" /> {m.title}
                 </p>
@@ -331,7 +331,7 @@ export function AssistantPanel(props: AssistantPanelProps) {
 
         {busy && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Spinner className="text-primary" />
+            <Spinner className="text-brand" />
             <span className="ds-pulse">{busy}</span>
             <Button size="sm" variant="ghost" className="ml-auto" onClick={() => abortRef.current?.abort()}>
               <Square /> Stop
@@ -344,7 +344,7 @@ export function AssistantPanel(props: AssistantPanelProps) {
         {!isEmpty && suggestions.length > 0 && !busy && (
           <div className="mb-2 flex flex-wrap gap-1.5">
             {suggestions.map((s) => (
-              <button key={s} onClick={() => send(s)} className="rounded-full border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground">
+              <button key={s} onClick={() => send(s)} className="rounded-full border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-brand/50 hover:text-foreground">
                 {s}
               </button>
             ))}
@@ -394,7 +394,7 @@ export function AssistantPanel(props: AssistantPanelProps) {
           </button>
         )}
         {settings.provider === "gemini" && props.cloudConfigured === false && (
-          <div className="mt-2 rounded-md border border-primary/30 bg-primary/5 p-2.5 text-xs">
+          <div className="mt-2 rounded-md border border-brand/30 bg-brand/5 p-2.5 text-xs">
             <p className="font-medium">Add your Gemini API key to use cloud AI</p>
             <p className="mt-0.5 text-muted-foreground">Diagram Studio uses your own key and the model you choose.</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
@@ -431,13 +431,13 @@ function DiffList({ diff }: { diff: DiagramDiff }) {
   const rows: { icon: typeof Plus; cls: string; text: string }[] = [
     ...diff.addedNodes.map((n) => ({ icon: Plus, cls: "text-success", text: n.label })),
     ...diff.removedNodes.map((n) => ({ icon: Minus, cls: "text-destructive", text: n.label })),
-    ...diff.updatedNodes.map((u) => ({ icon: Pencil, cls: "text-primary", text: `${u.after.label} (${u.fields.join(", ")})` })),
+    ...diff.updatedNodes.map((u) => ({ icon: Pencil, cls: "text-brand", text: `${u.after.label} (${u.fields.join(", ")})` })),
     ...diff.addedEdges.map((e) => ({ icon: Plus, cls: "text-success", text: `${e.source} → ${e.target}${e.label ? `: ${e.label}` : ""}` })),
     ...diff.removedEdges.map((e) => ({ icon: Minus, cls: "text-destructive", text: `${e.source} → ${e.target}` })),
-    ...diff.updatedEdges.map((u) => ({ icon: Pencil, cls: "text-primary", text: `${u.after.source} → ${u.after.target} (${u.fields.join(", ")})` })),
+    ...diff.updatedEdges.map((u) => ({ icon: Pencil, cls: "text-brand", text: `${u.after.source} → ${u.after.target} (${u.fields.join(", ")})` })),
   ];
-  if (diff.layoutChanged) rows.push({ icon: Pencil, cls: "text-primary", text: "Layout direction (diagram will be re-arranged)" });
-  if (diff.groupsChanged) rows.push({ icon: Pencil, cls: "text-primary", text: "Groups" });
+  if (diff.layoutChanged) rows.push({ icon: Pencil, cls: "text-brand", text: "Layout direction (diagram will be re-arranged)" });
+  if (diff.groupsChanged) rows.push({ icon: Pencil, cls: "text-brand", text: "Groups" });
   if (!rows.length) return null;
   return (
     <ul className="mt-2 space-y-1 text-xs">

@@ -30,7 +30,7 @@ function SceneItem({
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={cn(
         "group flex items-center gap-1 rounded-lg border bg-card pr-1 transition-colors",
-        selected ? "border-primary/60 bg-primary/5" : "hover:border-muted-foreground/30",
+        selected ? "border-brand/60 bg-brand/5" : "hover:border-muted-foreground/30",
         isDragging && "z-10 shadow-xl",
       )}
     >

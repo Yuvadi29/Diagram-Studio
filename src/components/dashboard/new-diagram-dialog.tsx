@@ -95,7 +95,7 @@ export function NewDiagramDialog({
                     setPrompt(ex.prompt);
                     setType(ex.type);
                   }}
-                  className="rounded-full border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                  className="rounded-full border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-brand/50 hover:text-foreground"
                 >
                   {ex.label}
                 </button>
