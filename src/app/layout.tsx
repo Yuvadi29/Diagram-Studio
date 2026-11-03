@@ -25,6 +25,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-78EQMPEGVH" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];\nfunction gtag(){dataLayer.push(arguments);}\ngtag('js', new Date());\ngtag('config', 'G-78EQMPEGVH');`,
+          }}
+        />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       {/* Browser extensions (e.g. ColorZilla) add attributes to <body> before React loads. */}
