@@ -7,7 +7,7 @@ import { useTopic } from "./topic-context";
 import { TOPICS } from "./topics";
 
 /**
- * The hero's one piece of media: a Diagram Studio window that plays the whole
+ * The hero's one piece of media: a FlowDeck window that plays the whole
  * product on the visitor's chosen topic. Describe → Edit → Present (16:9) →
  * 9:16, every frame drawn by the app's own presentation renderer. It only runs
  * while visible, honours the page-wide pause and reduced motion, and the step

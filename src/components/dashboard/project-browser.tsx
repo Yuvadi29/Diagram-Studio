@@ -129,7 +129,7 @@ export function ProjectBrowser({ initialProjects, mode }: { initialProjects: Pro
         <div className="card-chai px-6 py-14 text-center">
           <Sparkles className="mx-auto size-8 text-brand" />
           <h2 className="mt-4 text-xl font-medium">Start by describing the diagram you want to create.</h2>
-          <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">Diagram Studio generates an editable Excalidraw diagram you can refine and turn into a presentation.</p>
+          <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">FlowDeck generates an editable Excalidraw diagram you can refine and turn into a presentation.</p>
           <div className="mx-auto mt-6 grid max-w-2xl gap-2 sm:grid-cols-2">
             {EXAMPLE_PROMPTS.slice(0, 4).map((ex) => (
               <NewDiagramDialog key={ex.label} initialPrompt={{ prompt: ex.prompt, type: ex.type }}>

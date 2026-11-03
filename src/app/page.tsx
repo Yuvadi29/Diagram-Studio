@@ -5,15 +5,15 @@ import { publicEnv } from "@/lib/env";
 import "./landing.css";
 
 export const metadata: Metadata = {
-  title: { absolute: "Diagram Studio: turn complex ideas into visual stories" },
+  title: { absolute: "FlowDeck: turn complex ideas into visual stories" },
   description:
-    "Describe a system in a sentence. Diagram Studio draws an editable Excalidraw diagram and turns it into a step-by-step presentation in 16:9 and 9:16, with images and MP4 export.",
+    "Describe a system in a sentence. FlowDeck draws an editable Excalidraw diagram and turns it into a step-by-step presentation in 16:9 and 9:16, with images and MP4 export.",
   openGraph: {
-    title: "Diagram Studio",
+    title: "FlowDeck",
     description: "Turn complex ideas into visual stories. AI diagrams you can edit, presented scene by scene.",
     type: "website",
   },
-  twitter: { card: "summary_large_image", title: "Diagram Studio", description: "Turn complex ideas into visual stories." },
+  twitter: { card: "summary_large_image", title: "FlowDeck", description: "Turn complex ideas into visual stories." },
 };
 
 export default async function Home() {

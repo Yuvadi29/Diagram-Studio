@@ -52,7 +52,7 @@ export function LandingPage({ signedIn }: { signedIn: boolean }) {
               <AnimatedBadge>New: present in 16:9 and 9:16</AnimatedBadge>
               <h1 id="hero-title">Turn complex ideas into visual stories</h1>
               <p className="c-lead">
-                Describe a system in a sentence. Diagram Studio draws an editable Excalidraw diagram, then presents it <Highlight>scene by scene</Highlight> for YouTube, courses and Shorts.
+                Describe a system in a sentence. FlowDeck draws an editable Excalidraw diagram, then presents it <Highlight>scene by scene</Highlight> for YouTube, courses and Shorts.
               </p>
               <div className="c-hero-actions">
                 <Link href={primary.href} className="c-btn c-btn-solid c-btn-lg">
@@ -70,7 +70,7 @@ export function LandingPage({ signedIn }: { signedIn: boolean }) {
               <ProductDemo />
             </section>
 
-            <section aria-label="Diagram Studio in numbers">
+            <section aria-label="FlowDeck in numbers">
               <dl className="c-stats">
                 {STATS.map((s) => (
                   <div key={s.label}>
@@ -103,7 +103,7 @@ export function LandingPage({ signedIn }: { signedIn: boolean }) {
             </section>
 
             <section id="features" className="c-section" aria-labelledby="features-title">
-              <SectionHead id="features-title" title="Why Diagram Studio">
+              <SectionHead id="features-title" title="Why FlowDeck">
                 Built for people who <Highlight>explain systems for a living</Highlight>.
               </SectionHead>
               <div className="c-bento">
@@ -157,7 +157,7 @@ export function LandingPage({ signedIn }: { signedIn: boolean }) {
               <div className="c-footer-brand">
                 <Wordmark />
                 <span className="c-footer-tagline">Turn complex ideas into visual stories</span>
-                <p className="c-footer-legal">© {new Date().getFullYear()} Diagram Studio. Diagrams are drawn with Excalidraw.</p>
+                <p className="c-footer-legal">© {new Date().getFullYear()} FlowDeck. Diagrams are drawn with Excalidraw.</p>
               </div>
               <div className="c-footer-cols">
                 <nav aria-label="Product">

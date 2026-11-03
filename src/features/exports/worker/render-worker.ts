@@ -57,7 +57,7 @@ async function main() {
 async function processJob(supabase: ReturnType<typeof createAdminClient>, job: Job, serveUrl: string) {
   const started = Date.now();
   log(`Rendering ${job.id} (${job.format})`);
-  const outFile = path.join(os.tmpdir(), `diagram-studio-${job.id}.mp4`);
+  const outFile = path.join(os.tmpdir(), `flowdeck-${job.id}.mp4`);
   try {
     if (!job.presentation_id) throw new Error("Export has no presentation.");
     const [{ data: presentation, error: pErr }, { data: diagram, error: dErr }, { data: scenes, error: sErr }] = await Promise.all([

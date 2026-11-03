@@ -13,7 +13,7 @@ export function AISettingsSection({ initial, cloud: initialCloud, usageLine }: {
       <Card id="api-keys">
         <CardHeader>
           <CardTitle>API keys</CardTitle>
-          <CardDescription>Store your own keys. Diagram Studio never uses a shared key.</CardDescription>
+          <CardDescription>Store your own keys. FlowDeck never uses a shared key.</CardDescription>
         </CardHeader>
         <CardContent>
           <ApiKeysCard cloud={cloud} onChange={setCloud} />
@@ -22,7 +22,7 @@ export function AISettingsSection({ initial, cloud: initialCloud, usageLine }: {
       <Card id="ai">
         <CardHeader>
           <CardTitle>AI provider</CardTitle>
-          <CardDescription>Choose Gemini (with your key) or local Ollama, and the model to use. Diagram Studio never switches providers on its own.</CardDescription>
+          <CardDescription>Choose Gemini (with your key) or local Ollama, and the model to use. FlowDeck never switches providers on its own.</CardDescription>
         </CardHeader>
         <CardContent>
           <ProviderSettingsForm key={`${cloud.hasKey}:${cloud.keyHint}`} initial={initial} cloud={cloud} keySource="settings" onSaved={(_s, c) => setCloud(c)} />

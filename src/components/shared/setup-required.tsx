@@ -14,7 +14,7 @@ export function SetupRequired({ detail }: { detail?: string }) {
         <Database className="size-6 text-brand" />
         <h1 className="mt-3 text-2xl font-medium tracking-tight">Finish setting up the database</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          You’re connected to Supabase{ref ? ` (project ${ref})` : ""}, but Diagram Studio’s tables don’t exist there yet. This is a one-time step.
+          You’re connected to Supabase{ref ? ` (project ${ref})` : ""}, but FlowDeck’s tables don’t exist there yet. This is a one-time step.
         </p>
         <ol className="mt-5 grid list-decimal gap-3 pl-5 text-sm">
           <li>

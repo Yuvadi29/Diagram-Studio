@@ -73,7 +73,7 @@ export function exportProjectJson(data: {
   scenes?: PresentationScene[];
 }) {
   const payload = {
-    format: "diagram-studio-project",
+    format: "flowdeck-project",
     version: 1,
     exportedAt: new Date().toISOString(),
     title: data.title,
@@ -82,5 +82,5 @@ export function exportProjectJson(data: {
     presentation: data.presentation ?? null,
     scenes: data.scenes ?? [],
   };
-  downloadBlob(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }), `${safeFilename(data.title)}.diagram-studio.json`);
+  downloadBlob(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }), `${safeFilename(data.title)}.flowdeck.json`);
 }

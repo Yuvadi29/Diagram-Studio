@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Diagram Studio: turn complex ideas into visual stories";
+export const alt = "FlowDeck: turn complex ideas into visual stories";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -35,7 +35,7 @@ export default function OpengraphImage() {
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 0 0 72px", width: 640 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14, fontSize: 28, fontWeight: 700, color: "#f5f5f5" }}>
             <div style={{ width: 40, height: 40, borderRadius: 10, border: "3px solid #ff8904", display: "flex" }} />
-            Diagram Studio
+            FlowDeck
           </div>
           <div style={{ marginTop: 34, fontSize: 70, lineHeight: 1, fontWeight: 700, letterSpacing: -3, color: "#fafafa" }}>Turn complex ideas into visual stories</div>
           <div style={{ marginTop: 26, fontSize: 26, color: "#a3a3a3" }}>AI diagrams you can edit, presented scene by scene in 16:9 and 9:16.</div>

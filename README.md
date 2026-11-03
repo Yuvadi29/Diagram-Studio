@@ -1,8 +1,8 @@
-# Diagram Studio
+# FlowDeck
 
 **Turn complex ideas into visual stories.**
 
-Describe a technical concept in plain language. Diagram Studio generates a structured, editable [Excalidraw](https://excalidraw.com) diagram, lets you refine it by hand or with AI, and turns it into a scene-by-scene presentation in **16:9** and **9:16**, ready to present, record or export as images and MP4.
+Describe a technical concept in plain language. FlowDeck generates a structured, editable [Excalidraw](https://excalidraw.com) diagram, lets you refine it by hand or with AI, and turns it into a scene-by-scene presentation in **16:9** and **9:16**, ready to present, record or export as images and MP4.
 
 - **AI diagram generation:** prompt → validated `DiagramDSL` → deterministic layout → native Excalidraw elements
 - **Editable by default:** the real Excalidraw editor, with autosave, version history and undo
@@ -57,7 +57,7 @@ These are readable only from the dashboard (or with the secret key). Signed-in u
 
 ### Local AI (Ollama)
 
-Diagram Studio is a hosted web app, and a server can't reach Ollama on *your* laptop. Instead, **your browser talks to your local Ollama directly**, and the server never proxies these calls.
+FlowDeck is a hosted web app, and a server can't reach Ollama on *your* laptop. Instead, **your browser talks to your local Ollama directly**, and the server never proxies these calls.
 
 1. Install [Ollama](https://ollama.com) and pull a model that's good at JSON: `ollama pull llama3.1` (or `qwen2.5`).
 2. Allow the app's origin (replace with your deployment URL, or `http://localhost:3000` locally):

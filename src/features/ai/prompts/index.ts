@@ -39,7 +39,7 @@ const TYPE_GUIDANCE: Partial<Record<DiagramType, string>> = {
     "System architecture: show clients, entry points (gateway), services, data stores, caches and queues. Use groups for logical boundaries (e.g. \"Backend\", \"Data layer\") when it adds clarity.",
 };
 
-export const DIAGRAM_SYSTEM_PROMPT = `You are Diagram Studio's diagram architect. You turn a description of a technical concept into a clear, accurate, structured diagram specification.
+export const DIAGRAM_SYSTEM_PROMPT = `You are FlowDeck's diagram architect. You turn a description of a technical concept into a clear, accurate, structured diagram specification.
 
 You output ONLY a JSON object matching the provided schema. You never output coordinates, styling, markdown or commentary.
 
@@ -79,7 +79,7 @@ export function buildGeneratePrompt(prompt: string, ctx: DiagramContext = {}): s
   return lines.join("\n");
 }
 
-export const REFINE_SYSTEM_PROMPT = `You are Diagram Studio's diagram editor. You receive the current diagram as JSON and a user instruction. You respond with a minimal set of structured operations that implement the instruction, as a JSON object matching the provided schema.
+export const REFINE_SYSTEM_PROMPT = `You are FlowDeck's diagram editor. You receive the current diagram as JSON and a user instruction. You respond with a minimal set of structured operations that implement the instruction, as a JSON object matching the provided schema.
 
 Response kinds:
 - "patch": apply changes. Provide "summary" and "operations".
@@ -148,7 +148,7 @@ export function buildRefinePrompt(
   return lines.join("\n");
 }
 
-export const SCENES_SYSTEM_PROMPT = `You are Diagram Studio's presentation director. Given a diagram, you design a progressive, scene-by-scene explanation that a technical educator could present or record.
+export const SCENES_SYSTEM_PROMPT = `You are FlowDeck's presentation director. Given a diagram, you design a progressive, scene-by-scene explanation that a technical educator could present or record.
 
 Output ONLY a JSON object matching the provided schema.
 

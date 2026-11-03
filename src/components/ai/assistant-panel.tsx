@@ -396,7 +396,7 @@ export function AssistantPanel(props: AssistantPanelProps) {
         {settings.provider === "gemini" && props.cloudConfigured === false && (
           <div className="mt-2 rounded-md border border-brand/30 bg-brand/5 p-2.5 text-xs">
             <p className="font-medium">Add your Gemini API key to use cloud AI</p>
-            <p className="mt-0.5 text-muted-foreground">Diagram Studio uses your own key and the model you choose.</p>
+            <p className="mt-0.5 text-muted-foreground">FlowDeck uses your own key and the model you choose.</p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               <Button size="sm" onClick={props.onOpenSettings}>
                 <Settings2 /> Set up Gemini

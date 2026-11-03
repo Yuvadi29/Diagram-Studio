@@ -44,7 +44,7 @@ export function Wordmark() {
   return (
     <span className="c-wordmark">
       <LogoMark className="c-logo" />
-      Diagram Studio
+      FlowDeck
     </span>
   );
 }
@@ -85,7 +85,7 @@ export function Navbar({ signedIn, primary }: { signedIn: boolean; primary: { hr
   return (
     <header className="c-nav" data-scrolled={scrolled || undefined}>
       <div className="c-nav-inner">
-        <Link href="/" aria-label="Diagram Studio home" className="c-nav-home">
+        <Link href="/" aria-label="FlowDeck home" className="c-nav-home">
           <Wordmark />
         </Link>
         <nav aria-label="Page sections" className="c-nav-links">

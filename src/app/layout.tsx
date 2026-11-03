@@ -7,7 +7,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
-  title: { default: "Diagram Studio", template: "%s · Diagram Studio" },
+  title: { default: "FlowDeck", template: "%s · FlowDeck" },
   description: "Turn complex ideas into visual stories. Generate editable diagrams with AI and present them scene by scene.",
   icons: { icon: "/icon.svg" },
 };

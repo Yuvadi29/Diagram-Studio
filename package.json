@@ -1,8 +1,8 @@
 {
-  "name": "diagram-studio",
+  "name": "flowdeck",
   "version": "0.1.0",
   "private": true,
-  "description": "Diagram Studio: turn complex ideas into visual stories. AI diagram generation, Excalidraw editing and scene-based presentations.",
+  "description": "FlowDeck: turn complex ideas into visual stories. AI diagram generation, Excalidraw editing and scene-based presentations.",
   "packageManager": "bun@1.2.0",
   "scripts": {
     "dev": "NODE_OPTIONS=--max-http-header-size=65536 next dev",

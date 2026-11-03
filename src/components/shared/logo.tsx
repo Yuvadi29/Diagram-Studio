@@ -16,7 +16,7 @@ export function Logo({ href = "/", className }: { href?: string; className?: str
   return (
     <Link href={href} className={cn("flex items-center gap-2 font-onest font-semibold tracking-tight", className)}>
       <LogoMark />
-      <span>Diagram Studio</span>
+      <span>FlowDeck</span>
     </Link>
   );
 }
